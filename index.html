@@ -459,6 +459,28 @@ footer{margin-top:0}
   .about-cards{grid-template-columns:1fr}
 }
 @media (max-width:420px){.hsearch button{padding:11px 14px}.offer-strip img{display:none}}
+
+/* big shop cards on home */
+.vbtn{display:none}
+.shops.big{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.shops.big .scard{display:flex;flex-direction:column;align-items:stretch;gap:0;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.shops.big .scard:hover{transform:translateY(-3px)}
+.shops.big .scard .cov{border-radius:0;aspect-ratio:16/10;height:auto}
+.shops.big .scard .deal{font-size:19px;left:16px;bottom:12px;right:100px}
+.shops.big .scard .owner{width:84px;height:84px;right:14px;bottom:-30px;left:auto;top:auto;border:4px solid var(--surface);box-shadow:0 0 0 2px var(--gold);z-index:2}
+.shops.big .scard .fav{display:grid}
+.shops.big .scard .closed-tag{top:12px;left:12px;bottom:auto}
+.shops.big .scard .cov{overflow:visible}
+.shops.big .scard .cov>img.c{border-radius:0}
+.shops.big .scard .cov::after{border-radius:0}
+.shops.big .scard .info{padding:14px 16px 16px;gap:5px}
+.shops.big .scard h3{font-size:20px;white-space:normal;padding-right:92px}
+.shops.big .scard .meta{font-size:15.5px}
+.shops.big .scard .sub{font-size:14.5px}
+.shops.big .scard .who{font-size:14px}
+.shops.big .vbtn{display:block;margin-top:10px;text-align:center;background:var(--brand);color:var(--brand-ink);font-weight:700;border-radius:12px;padding:11px}
+@media (max-width:1000px){.shops.big{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.shops.big{grid-template-columns:1fr;gap:20px}}
 </style>
 
 <header class="top">
@@ -623,7 +645,7 @@ function scard(s){
      <div class="meta"><span class="rating">${star}${s.rating}</span><span class="dot-sep"></span><span>${eta(s)}</span></div>
      <div class="sub">${cuts}</div>
      <div class="sub">${s.area}, ${s.town} · ${s.km} km</div>
-     <div class="who">${kycTick}<span>${s.owner} · since ${s.since} · ${inr(s.price)}/kg</span></div></div></a>`;
+     <div class="who">${kycTick}<span>${s.owner} · since ${s.since} · ${inr(s.price)}/kg</span></div><span class="vbtn">${s.open?'View menu & order':'Pre-order for tomorrow'} ›</span></div></a>`;
 }
 function hl(t){if(!query.trim())return esc(t);const q=query.trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return esc(t).replace(new RegExp('('+q+')','ig'),'<mark>$1</mark>')}
 
@@ -664,6 +686,10 @@ function viewHome(){
 
     ${reg?`<section class="sec"><div class="regular"><img class="ava" src="${reg.photo}" alt="${reg.owner}"><div class="t"><small>♥ YOUR SHOP</small><h3>${reg.name} · ${reg.owner}</h3><p>Last order: 1 kg curry cut · 500 g keema · ${inr(1290)}</p></div><button class="btn btn-brand" type="button" id="reorder">Order again</button></div></section>`:''}
 
+    <section class="sec" id="allShops"><div class="sec-h"><div><h2>${cp?`Shops with ${cp.short.toLowerCase()} in ${town}`:`Shops near you in ${town}`}</h2><p>${cp?'Lowest price first':list.length+' shops · tap a shop to see its menu'}</p></div></div>
+      <div class="chips" role="group" aria-label="Sort and filter">${[['near','Nearest'],['top','Top rated'],['open','Open now']].map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${filt.has(k)}">${l}</button>`).join('')}</div>
+      <div class="shops big">${list.length?list.map(scard).join(''):'<div class="empty"><b>No shops open right now</b>Remove "Open now" to see all shops. You can pre-order.</div>'}</div>
+    </section>
     <section class="sec"><div class="sec-h"><div><h2>Choose your cut</h2><p>Tap a cut to see which shops have it and at what price.</p></div>${cutFilter?'<button class="more" type="button" id="clearCut">Show all shops</button>':''}</div>
       <div class="cutgrid">${showCuts.map(k=>{const p=PRODUCTS.find(x=>x.k===k);const low=Math.min(...here.filter(s=>!s.hide.includes(k)).map(s=>priceFor(s,p)));
         return `<button class="cutg" type="button" data-cut="${k}" aria-pressed="${cutFilter===k}"><img src="${IMG(p.imgs[p.imgs.length-1])}" alt="" loading="lazy"><b>${p.short}</b><span class="num">from ${p.per?inr(low)+' / '+p.unit:inr(low/2)+' / 500 g'}</span></button>`}).join('')}</div></section>
@@ -671,10 +697,6 @@ function viewHome(){
     <section class="sec"><div class="sec-h"><div><h2>Meet the butchers in ${town}</h2><p>Every owner's photo is checked with Aadhaar KYC by our team</p></div></div>
       <div class="scroller">${here.slice().sort((a,b)=>a.km-b.km).map(s=>`<a class="face" href="#shop-${s.id.toLowerCase()}"><span class="ring"><img class="ava" src="${s.photo}" alt="${s.owner}" loading="lazy">${kycTick}</span><b>${s.owner}</b><span>${s.name}</span><span class="rating">${star}${s.rating}</span></a>`).join('')}</div></section>
 
-    <section class="sec" id="allShops"><div class="sec-h"><div><h2>${cp?`Shops with ${cp.short.toLowerCase()} in ${town}`:`Shops in ${town}`}</h2><p>${cp?'Lowest price first':list.length+' shops · tap a shop to see its menu'}</p></div></div>
-      <div class="chips" role="group" aria-label="Sort and filter">${[['near','Nearest'],['top','Top rated'],['open','Open now']].map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${filt.has(k)}">${l}</button>`).join('')}</div>
-      <div class="shops">${list.length?list.map(scard).join(''):'<div class="empty"><b>No shops open right now</b>Remove "Open now" to see all shops. You can pre-order.</div>'}</div>
-    </section>
 
     <section class="sec offer-strip"><div><b>New to Are Katike?</b><span>Get ₹75 off your first order above ₹499. Code <b>AREKATIKE75</b> is applied in the cart.</span></div><img src="${IMG('banner-nalli')}" alt=""></section>
 
