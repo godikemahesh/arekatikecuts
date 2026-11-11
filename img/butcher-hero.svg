@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="bt">
+  <title id="bt">A Katike butcher with kumkum on his forehead cutting fresh mutton on a wooden block</title>
+  <style>
+    #forearm{transform-origin:112px 318px;transform-box:view-box;animation:chop 1.4s cubic-bezier(.5,0,.2,1) infinite}
+    #impact{opacity:0;animation:imp 1.4s linear infinite}
+    #meat{transform-box:view-box;transform-origin:220px 350px;animation:hit 1.4s linear infinite}
+    @keyframes chop{0%{transform:rotate(0)}12%{transform:rotate(-4deg)}55%{transform:rotate(-38deg)}78%{transform:rotate(0)}100%{transform:rotate(0)}}
+    @keyframes imp{0%,77%{opacity:0}80%{opacity:1}92%,100%{opacity:0}}
+    @keyframes hit{0%,77%,88%,100%{transform:none}80%{transform:translateY(2px) scaleY(.96)}}
+    @media (prefers-reduced-motion:reduce){#forearm,#meat{animation:none}#impact{animation:none;opacity:1}}
+  </style>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#8E1B2C"/><stop offset="1" stop-color="#3A0810"/></radialGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8F98A3"/><stop offset=".55" stop-color="#E4E8EC"/><stop offset="1" stop-color="#B7BEC6"/></linearGradient>
+    <linearGradient id="logside" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B5A2B"/><stop offset="1" stop-color="#5E3A19"/></linearGradient>
+    <radialGradient id="logtop" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#E2B378"/><stop offset="1" stop-color="#B98549"/></radialGradient>
+    <pattern id="check" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#F4EFE6"/><rect width="6" height="12" fill="#C0392B" opacity=".85"/><rect width="12" height="6" fill="#C0392B" opacity=".55"/></pattern>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCE7A8"/><stop offset=".5" stop-color="#E2B04E"/><stop offset="1" stop-color="#B07A22"/></linearGradient>
+    <clipPath id="cl"><circle cx="200" cy="200" r="186"/></clipPath>
+  </defs>
+
+  <circle cx="200" cy="200" r="198" fill="#E2B04E"/>
+  <circle cx="200" cy="200" r="190" fill="#3A0810"/>
+  <g clip-path="url(#cl)">
+    <rect width="400" height="400" fill="url(#bg)"/>
+    <!-- shop wall tiles -->
+    <g stroke="#ffffff" stroke-opacity=".06" stroke-width="1.5">
+      <path d="M0 80h400M0 130h400M0 180h400M0 230h400M60 0v260M120 0v260M180 0v260M240 0v260M300 0v260M360 0v260"/>
+    </g>
+    <!-- arched brand name behind the butcher -->
+    <circle cx="200" cy="205" r="118" fill="#E2B04E" opacity=".07"/>
+    <path id="akArc" d="M52 212 A148 148 0 0 1 348 212" fill="none"/>
+    <text font-family="'Rozha One', Georgia, serif" font-size="46" letter-spacing="5" fill="url(#gold)" stroke="#2A060C" stroke-width="2.4" paint-order="stroke" text-anchor="middle"><textPath href="#akArc" startOffset="50%">ARE KATIKE</textPath></text>
+    <g fill="#F3D58E"><path d="M58 150 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/><path d="M342 150 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/><circle cx="200" cy="24" r="3"/></g>
+    <!-- torso -->
+    <path d="M118 400 L126 300 Q130 256 176 246 L224 246 Q270 256 274 300 L282 400 Z" fill="#A86B45"/>
+    <path d="M150 400 L150 302 Q152 268 168 256 L178 255 Q186 284 200 287 Q214 284 222 255 L232 256 Q248 268 250 302 L250 400 Z" fill="#F5F2EC"/>
+    <path d="M150 400 L150 302 Q152 268 168 256 L172 256 Q162 290 166 400 Z" fill="#E3DDD2"/>
+    <!-- towel on shoulder -->
+    <path d="M226 248 Q254 244 272 262 L266 336 L246 340 L242 270 Q236 256 226 252 Z" fill="url(#check)"/>
+    <path d="M246 340 L266 336 L268 346 L248 350 Z" fill="#C0392B"/>
+
+    <!-- neck and head -->
+    <rect x="186" y="214" width="28" height="40" rx="10" fill="#96603D"/>
+    <ellipse cx="161" cy="186" rx="7" ry="11" fill="#9C6440"/>
+    <ellipse cx="239" cy="186" rx="7" ry="11" fill="#9C6440"/>
+    <ellipse cx="200" cy="184" rx="38" ry="46" fill="#A86B45"/>
+    <path d="M168 210 Q200 236 232 210 Q226 228 200 232 Q174 228 168 210 Z" fill="#8E5634" opacity=".55"/>
+    <path d="M162 180 Q158 132 200 130 Q242 132 238 180 Q234 156 200 152 Q168 154 162 180 Z" fill="#1E1410"/>
+    <!-- kumkum -->
+    <rect x="197" y="150" width="6" height="20" rx="3" fill="#D7261E"/>
+    <circle cx="200" cy="173" r="2.6" fill="#F2B233"/>
+    <!-- brows, eyes, nose -->
+    <path d="M175 172 Q186 166 194 171 M225 172 Q214 166 206 171" stroke="#1E1410" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="186" cy="182" rx="5" ry="3" fill="#FFFFFF"/><ellipse cx="214" cy="182" rx="5" ry="3" fill="#FFFFFF"/>
+    <circle cx="186.5" cy="182" r="2.4" fill="#1E1410"/><circle cx="213.5" cy="182" r="2.4" fill="#1E1410"/>
+    <path d="M200 180 Q196 196 199 200 Q204 202 207 198" stroke="#7E4A2C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <!-- mustache and smile -->
+    <path d="M178 207 Q190 198 200 204 Q210 198 222 207 Q214 214 200 210 Q186 214 178 207 Z" fill="#1E1410"/>
+    <path d="M190 216 Q200 222 210 216" stroke="#6E3A22" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+
+    <!-- left arm (holding meat) -->
+    <path d="M262 272 Q304 312 268 346" stroke="#A86B45" stroke-width="30" fill="none" stroke-linecap="round"/>
+
+    <!-- chopping log -->
+    <path d="M78 352 L78 400 L322 400 L322 352 Z" fill="url(#logside)"/>
+    <path d="M100 360v40M140 364v36M180 366v34M220 366v34M260 364v36M300 360v40" stroke="#4A2C12" stroke-opacity=".35" stroke-width="2"/>
+    <ellipse cx="200" cy="352" rx="122" ry="28" fill="url(#logtop)"/>
+    <ellipse cx="200" cy="352" rx="88" ry="19" fill="none" stroke="#A8743E" stroke-width="2"/>
+    <ellipse cx="200" cy="352" rx="52" ry="11" fill="none" stroke="#A8743E" stroke-width="2"/>
+    <!-- meat on the log -->
+    <g id="meat">
+      <path d="M214 330 Q238 318 266 326 Q286 334 280 350 Q270 364 240 362 Q214 360 208 348 Q206 338 214 330 Z" fill="#B22B3E"/>
+      <path d="M222 336 Q246 330 268 338" stroke="#F3E3D6" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M232 352 Q252 350 270 346" stroke="#E8B7A6" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M150 346 Q160 336 176 340 Q186 346 180 356 Q168 362 156 358 Q146 354 150 346 Z" fill="#A8293B"/>
+      <circle cx="166" cy="348" r="4" fill="#F3E3D6"/>
+      <path d="M126 356 Q134 348 144 352 Q148 360 140 364 Q128 366 126 356 Z" fill="#9E2335"/>
+    </g>
+    <ellipse cx="252" cy="344" rx="16" ry="11" fill="#A86B45"/>
+
+    <!-- right arm: upper arm fixed, forearm chops down onto the log -->
+    <path d="M142 272 L112 318" stroke="#A86B45" stroke-width="30" fill="none" stroke-linecap="round"/>
+    <path d="M142 272 L118 310" stroke="#8E5634" stroke-width="8" fill="none" stroke-linecap="round" opacity=".3"/>
+    <g id="impact" stroke="#F3D58E" stroke-width="3" stroke-linecap="round">
+      <path d="M150 336 L138 330"/><path d="M152 348 L138 350"/><path d="M246 332 L258 324"/><path d="M248 346 L262 346"/>
+      <circle cx="160" cy="326" r="2.5" fill="#B22B3E" stroke="none"/><circle cx="238" cy="322" r="2" fill="#B22B3E" stroke="none"/>
+    </g>
+    <g id="forearm">
+      <path d="M112 318 L174 298" stroke="#A86B45" stroke-width="28" fill="none" stroke-linecap="round"/>
+      <path d="M118 324 L170 308" stroke="#8E5634" stroke-width="6" fill="none" stroke-linecap="round" opacity=".3"/>
+      <g transform="translate(176 298)">
+        <rect x="-26" y="-6" width="24" height="12" rx="5" fill="#4A2C12"/>
+        <circle cx="-18" cy="0" r="2" fill="#C9A15A"/>
+        <path d="M-6 0 L58 0 Q62 0 62 4 L62 50 L-6 50 Q-10 50 -10 46 L-10 4 Q-10 0 -6 0 Z" fill="url(#blade)" stroke="#6F7780" stroke-width="2"/>
+        <path d="M-8 48 L60 48" stroke="#FFFFFF" stroke-width="2.5" opacity=".85"/>
+        <circle cx="50" cy="10" r="4.5" fill="#3A0810" opacity=".55"/>
+        <circle cx="0" cy="0" r="15" fill="#A86B45"/>
+        <path d="M-8 -6 Q0 -11 9 -6" stroke="#8E5634" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+</svg>

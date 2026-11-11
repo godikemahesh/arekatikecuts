@@ -1,7 +1,7 @@
 <title>Are Katike Cuts</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@500&family=Rozha+One&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;500;600&family=Rozha+One&display=swap">
 <style>
 /* Layout: app shell. Sticky header (delivery time + town) → sticky search → views routed by hash: home, search, shop, cart, orders, my-shops, account. Mobile bottom nav; desktop top nav. */
 :root{
@@ -409,9 +409,12 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
 .tbtn{border:1px solid rgba(226,176,78,.45);color:#FBEFE6;border-radius:999px;padding:5px 14px;font-weight:600;font-size:14px}
 .tbtn[aria-pressed="true"]{background:#E2B04E;color:#3A0810;border-color:#E2B04E}
 .hero-logo{position:relative;justify-self:center;width:min(340px,100%);aspect-ratio:1;max-width:100%}
-.hero-logo img{width:100%;height:100%;border-radius:50%;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 6px rgba(226,176,78,.15)}
+.hero-logo img{width:100%;height:100%;border-radius:50%;background:#3A0810;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 6px rgba(226,176,78,.15)}
 .hero-logo .ring{position:absolute;inset:-5%;border:1px dashed rgba(226,176,78,.4);border-radius:50%;animation:spin 90s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.hero-cap{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);white-space:nowrap;background:#E2B04E;color:#3A0810;font-weight:700;font-size:13px;padding:6px 14px;border-radius:999px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.hero-cap{font-family:var(--f-ui)}
+.hero-svg{width:100%;height:100%;display:block;border-radius:50%;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 6px rgba(226,176,78,.15)}
 .facts{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding-block:0 30px}
 .facts div{border-top:1px solid rgba(226,176,78,.3);padding-top:12px}
 .facts b{display:block;font-size:24px;font-weight:800;color:#E2B04E;line-height:1.1}
@@ -481,6 +484,13 @@ footer{margin-top:0}
 .shops.big .vbtn{display:block;margin-top:10px;text-align:center;background:var(--brand);color:var(--brand-ink);font-weight:700;border-radius:12px;padding:11px}
 @media (max-width:1000px){.shops.big{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.shops.big{grid-template-columns:1fr;gap:20px}}
+
+.te-n,.te-h,.te-s{font-family:"Noto Sans Telugu",var(--f-ui);font-weight:500}
+.te-n{color:var(--muted);font-size:.88em}
+.te-h{color:var(--brand);font-size:.72em;white-space:nowrap}
+.te-s{display:block;color:var(--brand);font-size:13px}
+.pcard .te-n{display:block;font-size:12.5px}
+.about .te-h,.about small{color:#E2B04E}
 </style>
 
 <header class="top">
@@ -544,24 +554,25 @@ const V=$('#view');
 
 /* ================= DATA ================= */
 const PRODUCTS=[
- {k:'curry',name:'Mutton curry cut',short:'Curry cut',desc:'Bone-in pieces with a little fat, about 1.5 inch. Best for curry and biryani.',cat:'Curry cut',d:0,imgs:['curry-1','curry-2'],tag:'Bestseller',syn:'curry mutton goat biryani'},
- {k:'boneless',name:'Boneless mutton',short:'Boneless',desc:'Lean leg cubes, no bone. For fry, kebab and pepper fry.',cat:'Boneless',d:180,imgs:['boneless-1'],syn:'boneless cubes leg fry'},
- {k:'keema',name:'Mutton keema',short:'Keema',desc:'Fresh minced mutton, ground twice. For keema curry and parota.',cat:'Keema',d:80,imgs:['keema-1','keema-2','keema-3','keema-4'],tag:'Popular',syn:'keema kheema mince minced kima'},
- {k:'chops',name:'Mutton chops',short:'Chops',desc:'Rib chops for fry and gravy.',cat:'Chops',d:60,imgs:['chops-1','chops-2'],syn:'chops ribs chaap'},
- {k:'liver',name:'Liver (kaleji)',short:'Liver',desc:'Fresh liver, washed and cleaned. For liver fry.',cat:'Liver, kidney & boti',d:-120,imgs:['liver-1','liver-2','liver-3'],syn:'liver kaleji kaleja'},
- {k:'kidney',name:'Kidney (gurda)',short:'Kidney',desc:'Cleaned, outer fat removed.',cat:'Liver, kidney & boti',d:-140,imgs:['kidney-1','kidney-2'],syn:'kidney gurda gurde'},
- {k:'boti',name:'Boti',short:'Boti',desc:'Tripe, washed in hot water and cut small.',cat:'Liver, kidney & boti',d:-360,imgs:['boti-1'],syn:'boti tripe pegulu'},
- {k:'paya',name:'Paya (trotters)',short:'Paya',desc:'Set of 4 legs, roasted on fire and cleaned. For paya soup.',cat:'Head, legs & brain',per:240,unit:'set',imgs:['paya-1','paya-2'],syn:'paya trotters legs kaallu nalli'},
- {k:'head',name:'Head meat (thalakaya)',short:'Head meat',desc:'Whole head, roasted, cleaned and cut.',cat:'Head, legs & brain',per:350,unit:'piece',imgs:['head-1'],syn:'head thalakaya talakaya siri'},
- {k:'brain',name:'Brain (bheja)',short:'Brain',desc:'Fresh, one piece. For brain fry.',cat:'Head, legs & brain',per:120,unit:'piece',imgs:['brain-1','brain-2'],syn:'brain bheja maghaz'},
- {k:'masala',name:'Mutton masala powder',short:'Mutton masala',desc:'Home-ground by the shop, 100 g.',cat:'Masalas & extras',addon:1,price:60,unit:'pack',imgs:['addon-masala'],syn:'masala powder'},
- {k:'spices',name:'Biryani spice kit',short:'Biryani spices',desc:'Whole spices for 1 kg biryani.',cat:'Masalas & extras',addon:1,price:90,unit:'kit',imgs:['addon-spices'],syn:'biryani spices kit'},
- {k:'garam',name:'Garam masala (whole)',short:'Garam masala',desc:'Cloves, cinnamon, cardamom, star anise. 50 g.',cat:'Masalas & extras',addon:1,price:55,unit:'pack',imgs:['addon-garam'],syn:'garam masala whole'},
- {k:'curd',name:'Fresh curd',short:'Curd',desc:'500 g, for marination.',cat:'Masalas & extras',addon:1,price:40,unit:'pack',imgs:['addon-curd'],syn:'curd perugu dahi'},
- {k:'lemon',name:'Lemons',short:'Lemons',desc:'Pack of 4.',cat:'Masalas & extras',addon:1,price:20,unit:'pack',imgs:['addon-lemon'],syn:'lemon nimmakaya'},
- {k:'mint',name:'Mint leaves',short:'Mint',desc:'1 fresh bunch.',cat:'Masalas & extras',addon:1,price:10,unit:'bunch',imgs:['addon-mint'],syn:'mint pudina'}
+ {k:'curry',te:'కూర ముక్కలు',name:'Mutton curry cut',short:'Curry cut',desc:'Bone-in pieces with a little fat, about 1.5 inch. Best for curry and biryani.',cat:'Curry cut',d:0,imgs:['curry-1','curry-2'],tag:'Bestseller',syn:'curry mutton goat biryani'},
+ {k:'boneless',te:'బోన్‌లెస్',name:'Boneless mutton',short:'Boneless',desc:'Lean leg cubes, no bone. For fry, kebab and pepper fry.',cat:'Boneless',d:180,imgs:['boneless-1'],syn:'boneless cubes leg fry'},
+ {k:'keema',te:'ఖీమా',name:'Mutton keema',short:'Keema',desc:'Fresh minced mutton, ground twice. For keema curry and parota.',cat:'Keema',d:80,imgs:['keema-1','keema-2','keema-3','keema-4'],tag:'Popular',syn:'keema kheema mince minced kima'},
+ {k:'chops',te:'చాప్స్',name:'Mutton chops',short:'Chops',desc:'Rib chops for fry and gravy.',cat:'Chops',d:60,imgs:['chops-1','chops-2'],syn:'chops ribs chaap'},
+ {k:'liver',te:'కలేజీ',name:'Mutton liver',short:'Liver',desc:'Fresh liver, washed and cleaned. For liver fry.',cat:'Liver, kidney & boti',d:-120,imgs:['liver-1','liver-2','liver-3'],syn:'liver kaleji kaleja'},
+ {k:'kidney',te:'గుర్దా',name:'Mutton kidney',short:'Kidney',desc:'Cleaned, outer fat removed.',cat:'Liver, kidney & boti',d:-140,imgs:['kidney-1','kidney-2'],syn:'kidney gurda gurde'},
+ {k:'boti',te:'బోటి',name:'Boti',short:'Boti',desc:'Tripe, washed in hot water and cut small.',cat:'Liver, kidney & boti',d:-360,imgs:['boti-1'],syn:'boti tripe pegulu'},
+ {k:'paya',te:'కాళ్ళు',name:'Paya / trotters',short:'Paya',desc:'Set of 4 legs, roasted on fire and cleaned. For paya soup.',cat:'Head, legs & brain',per:240,unit:'set',imgs:['paya-1','paya-2'],syn:'paya trotters legs kaallu nalli'},
+ {k:'head',te:'తలకాయ',name:'Head meat',short:'Head meat',desc:'Whole head, roasted, cleaned and cut.',cat:'Head, legs & brain',per:350,unit:'piece',imgs:['head-1'],syn:'head thalakaya talakaya siri'},
+ {k:'brain',te:'మెదడు',name:'Brain',short:'Brain',desc:'Fresh, one piece. For brain fry.',cat:'Head, legs & brain',per:120,unit:'piece',imgs:['brain-1','brain-2'],syn:'brain bheja maghaz'},
+ {k:'masala',te:'మటన్ మసాలా',name:'Mutton masala powder',short:'Mutton masala',desc:'Home-ground by the shop, 100 g.',cat:'Masalas & extras',addon:1,price:60,unit:'pack',imgs:['addon-masala'],syn:'masala powder'},
+ {k:'spices',te:'బిర్యానీ దినుసులు',name:'Biryani spice kit',short:'Biryani spices',desc:'Whole spices for 1 kg biryani.',cat:'Masalas & extras',addon:1,price:90,unit:'kit',imgs:['addon-spices'],syn:'biryani spices kit'},
+ {k:'garam',te:'గరం మసాలా',name:'Garam masala (whole)',short:'Garam masala',desc:'Cloves, cinnamon, cardamom, star anise. 50 g.',cat:'Masalas & extras',addon:1,price:55,unit:'pack',imgs:['addon-garam'],syn:'garam masala whole'},
+ {k:'curd',te:'పెరుగు',name:'Fresh curd',short:'Curd',desc:'500 g, for marination.',cat:'Masalas & extras',addon:1,price:40,unit:'pack',imgs:['addon-curd'],syn:'curd perugu dahi'},
+ {k:'lemon',te:'నిమ్మకాయలు',name:'Lemons',short:'Lemons',desc:'Pack of 4.',cat:'Masalas & extras',addon:1,price:20,unit:'pack',imgs:['addon-lemon'],syn:'lemon nimmakaya'},
+ {k:'mint',te:'పుదీనా',name:'Mint leaves',short:'Mint',desc:'1 fresh bunch.',cat:'Masalas & extras',addon:1,price:10,unit:'bunch',imgs:['addon-mint'],syn:'mint pudina'}
 ];
 const MEATS=PRODUCTS.filter(p=>!p.addon);
+const TE=t=>t?` <span class="te-n">(${t})</span>`:'';
 const ADDONS=PRODUCTS.filter(p=>p.addon);
 
 const TOWNS={Korutla:'Jagtial road, Korutla',Metpally:'Armoor road, Metpally',Jagtial:'Old bus stand, Jagtial'};
@@ -629,7 +640,7 @@ function addCtl(s,p){
 function pcard(s,p,showShop){
   const v=priceFor(s,p);const strike=!p.addon&&(s.n+p.k.length)%3===0;
   return `<div class="pcard"><div class="pi"><img src="${imgFor(s,p)}" alt="${p.name}" loading="lazy">${addCtl(s,p)}</div>
-   <div class="pt">${hl(p.name)}</div><div class="pw">${p.addon?p.desc:p.per?'1 '+p.unit:'500 g · '+p.short}</div>
+   <div class="pt">${hl(p.name)}${TE(p.te)}</div><div class="pw">${p.addon?p.desc:p.per?'1 '+p.unit:'500 g · '+p.short}</div>
    <div class="pp num">${p.addon||p.per?inr(v):inr(v/2)}${strike?`<s>${inr((p.per?v:v/2)*1.08)}</s>`:''}</div>
    ${showShop?`<div class="by"><img class="ava" src="${s.photo}" alt=""><span>${s.owner} · ${s.name}</span></div>`:''}</div>`;
 }
@@ -645,7 +656,7 @@ function scard(s){
      <div class="meta"><span class="rating">${star}${s.rating}</span><span class="dot-sep"></span><span>${eta(s)}</span></div>
      <div class="sub">${cuts}</div>
      <div class="sub">${s.area}, ${s.town} · ${s.km} km</div>
-     <div class="who">${kycTick}<span>${s.owner} · since ${s.since} · ${inr(s.price)}/kg</span></div><span class="vbtn">${s.open?'View menu & order':'Pre-order for tomorrow'} ›</span></div></a>`;
+     <div class="who">${kycTick}<span>${s.owner} · since ${s.since} · ${inr(s.price)}/kg</span></div><span class="vbtn">${s.open?'View menu & order · ఆర్డర్ చేయండి':'Pre-order for tomorrow'} ›</span></div></a>`;
 }
 function hl(t){if(!query.trim())return esc(t);const q=query.trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return esc(t).replace(new RegExp('('+q+')','ig'),'<mark>$1</mark>')}
 
@@ -671,36 +682,138 @@ function viewHome(){
         <form class="hsearch" id="hForm" role="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="hq" type="search" placeholder="Search a cut or shop, e.g. keema" aria-label="Search a cut or shop" autocomplete="off"><button type="submit">Search</button></form>
         <div class="hero-town"><span>Delivering in</span>${Object.keys(TOWNS).map(t=>`<button type="button" class="tbtn" data-town="${t}" aria-pressed="${t===town}">${t}</button>`).join('')}</div>
       </div>
-      <div class="hero-logo"><span class="ring"></span><img src="logo-640.jpg" alt="Are Katike emblem: lion, Maratha talwar, saffron flag and fort" width="640" height="640"></div>
+      <div class="hero-logo"><span class="ring"></span><svg class="hero-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="bt">
+  <title id="bt">A Katike butcher with kumkum on his forehead cutting fresh mutton on a wooden block</title>
+  <style>
+    #forearm{transform-origin:112px 318px;transform-box:view-box;animation:chop 1.4s cubic-bezier(.5,0,.2,1) infinite}
+    #impact{opacity:0;animation:imp 1.4s linear infinite}
+    #meat{transform-box:view-box;transform-origin:220px 350px;animation:hit 1.4s linear infinite}
+    @keyframes chop{0%{transform:rotate(0)}12%{transform:rotate(-4deg)}55%{transform:rotate(-38deg)}78%{transform:rotate(0)}100%{transform:rotate(0)}}
+    @keyframes imp{0%,77%{opacity:0}80%{opacity:1}92%,100%{opacity:0}}
+    @keyframes hit{0%,77%,88%,100%{transform:none}80%{transform:translateY(2px) scaleY(.96)}}
+    @media (prefers-reduced-motion:reduce){#forearm,#meat{animation:none}#impact{animation:none;opacity:1}}
+  </style>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#8E1B2C"/><stop offset="1" stop-color="#3A0810"/></radialGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8F98A3"/><stop offset=".55" stop-color="#E4E8EC"/><stop offset="1" stop-color="#B7BEC6"/></linearGradient>
+    <linearGradient id="logside" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B5A2B"/><stop offset="1" stop-color="#5E3A19"/></linearGradient>
+    <radialGradient id="logtop" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#E2B378"/><stop offset="1" stop-color="#B98549"/></radialGradient>
+    <pattern id="check" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#F4EFE6"/><rect width="6" height="12" fill="#C0392B" opacity=".85"/><rect width="12" height="6" fill="#C0392B" opacity=".55"/></pattern>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCE7A8"/><stop offset=".5" stop-color="#E2B04E"/><stop offset="1" stop-color="#B07A22"/></linearGradient>
+    <clipPath id="cl"><circle cx="200" cy="200" r="186"/></clipPath>
+  </defs>
+
+  <circle cx="200" cy="200" r="198" fill="#E2B04E"/>
+  <circle cx="200" cy="200" r="190" fill="#3A0810"/>
+  <g clip-path="url(#cl)">
+    <rect width="400" height="400" fill="url(#bg)"/>
+    <!-- shop wall tiles -->
+    <g stroke="#ffffff" stroke-opacity=".06" stroke-width="1.5">
+      <path d="M0 80h400M0 130h400M0 180h400M0 230h400M60 0v260M120 0v260M180 0v260M240 0v260M300 0v260M360 0v260"/>
+    </g>
+    <!-- arched brand name behind the butcher -->
+    <circle cx="200" cy="205" r="118" fill="#E2B04E" opacity=".07"/>
+    <path id="akArc" d="M52 212 A148 148 0 0 1 348 212" fill="none"/>
+    <text font-family="'Rozha One', Georgia, serif" font-size="46" letter-spacing="5" fill="url(#gold)" stroke="#2A060C" stroke-width="2.4" paint-order="stroke" text-anchor="middle"><textPath href="#akArc" startOffset="50%">ARE KATIKE</textPath></text>
+    <g fill="#F3D58E"><path d="M58 150 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/><path d="M342 150 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/><circle cx="200" cy="24" r="3"/></g>
+    <!-- torso -->
+    <path d="M118 400 L126 300 Q130 256 176 246 L224 246 Q270 256 274 300 L282 400 Z" fill="#A86B45"/>
+    <path d="M150 400 L150 302 Q152 268 168 256 L178 255 Q186 284 200 287 Q214 284 222 255 L232 256 Q248 268 250 302 L250 400 Z" fill="#F5F2EC"/>
+    <path d="M150 400 L150 302 Q152 268 168 256 L172 256 Q162 290 166 400 Z" fill="#E3DDD2"/>
+    <!-- towel on shoulder -->
+    <path d="M226 248 Q254 244 272 262 L266 336 L246 340 L242 270 Q236 256 226 252 Z" fill="url(#check)"/>
+    <path d="M246 340 L266 336 L268 346 L248 350 Z" fill="#C0392B"/>
+
+    <!-- neck and head -->
+    <rect x="186" y="214" width="28" height="40" rx="10" fill="#96603D"/>
+    <ellipse cx="161" cy="186" rx="7" ry="11" fill="#9C6440"/>
+    <ellipse cx="239" cy="186" rx="7" ry="11" fill="#9C6440"/>
+    <ellipse cx="200" cy="184" rx="38" ry="46" fill="#A86B45"/>
+    <path d="M168 210 Q200 236 232 210 Q226 228 200 232 Q174 228 168 210 Z" fill="#8E5634" opacity=".55"/>
+    <path d="M162 180 Q158 132 200 130 Q242 132 238 180 Q234 156 200 152 Q168 154 162 180 Z" fill="#1E1410"/>
+    <!-- kumkum -->
+    <rect x="197" y="150" width="6" height="20" rx="3" fill="#D7261E"/>
+    <circle cx="200" cy="173" r="2.6" fill="#F2B233"/>
+    <!-- brows, eyes, nose -->
+    <path d="M175 172 Q186 166 194 171 M225 172 Q214 166 206 171" stroke="#1E1410" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="186" cy="182" rx="5" ry="3" fill="#FFFFFF"/><ellipse cx="214" cy="182" rx="5" ry="3" fill="#FFFFFF"/>
+    <circle cx="186.5" cy="182" r="2.4" fill="#1E1410"/><circle cx="213.5" cy="182" r="2.4" fill="#1E1410"/>
+    <path d="M200 180 Q196 196 199 200 Q204 202 207 198" stroke="#7E4A2C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <!-- mustache and smile -->
+    <path d="M178 207 Q190 198 200 204 Q210 198 222 207 Q214 214 200 210 Q186 214 178 207 Z" fill="#1E1410"/>
+    <path d="M190 216 Q200 222 210 216" stroke="#6E3A22" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+
+    <!-- left arm (holding meat) -->
+    <path d="M262 272 Q304 312 268 346" stroke="#A86B45" stroke-width="30" fill="none" stroke-linecap="round"/>
+
+    <!-- chopping log -->
+    <path d="M78 352 L78 400 L322 400 L322 352 Z" fill="url(#logside)"/>
+    <path d="M100 360v40M140 364v36M180 366v34M220 366v34M260 364v36M300 360v40" stroke="#4A2C12" stroke-opacity=".35" stroke-width="2"/>
+    <ellipse cx="200" cy="352" rx="122" ry="28" fill="url(#logtop)"/>
+    <ellipse cx="200" cy="352" rx="88" ry="19" fill="none" stroke="#A8743E" stroke-width="2"/>
+    <ellipse cx="200" cy="352" rx="52" ry="11" fill="none" stroke="#A8743E" stroke-width="2"/>
+    <!-- meat on the log -->
+    <g id="meat">
+      <path d="M214 330 Q238 318 266 326 Q286 334 280 350 Q270 364 240 362 Q214 360 208 348 Q206 338 214 330 Z" fill="#B22B3E"/>
+      <path d="M222 336 Q246 330 268 338" stroke="#F3E3D6" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M232 352 Q252 350 270 346" stroke="#E8B7A6" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M150 346 Q160 336 176 340 Q186 346 180 356 Q168 362 156 358 Q146 354 150 346 Z" fill="#A8293B"/>
+      <circle cx="166" cy="348" r="4" fill="#F3E3D6"/>
+      <path d="M126 356 Q134 348 144 352 Q148 360 140 364 Q128 366 126 356 Z" fill="#9E2335"/>
+    </g>
+    <ellipse cx="252" cy="344" rx="16" ry="11" fill="#A86B45"/>
+
+    <!-- right arm: upper arm fixed, forearm chops down onto the log -->
+    <path d="M142 272 L112 318" stroke="#A86B45" stroke-width="30" fill="none" stroke-linecap="round"/>
+    <path d="M142 272 L118 310" stroke="#8E5634" stroke-width="8" fill="none" stroke-linecap="round" opacity=".3"/>
+    <g id="impact" stroke="#F3D58E" stroke-width="3" stroke-linecap="round">
+      <path d="M150 336 L138 330"/><path d="M152 348 L138 350"/><path d="M246 332 L258 324"/><path d="M248 346 L262 346"/>
+      <circle cx="160" cy="326" r="2.5" fill="#B22B3E" stroke="none"/><circle cx="238" cy="322" r="2" fill="#B22B3E" stroke="none"/>
+    </g>
+    <g id="forearm">
+      <path d="M112 318 L174 298" stroke="#A86B45" stroke-width="28" fill="none" stroke-linecap="round"/>
+      <path d="M118 324 L170 308" stroke="#8E5634" stroke-width="6" fill="none" stroke-linecap="round" opacity=".3"/>
+      <g transform="translate(176 298)">
+        <rect x="-26" y="-6" width="24" height="12" rx="5" fill="#4A2C12"/>
+        <circle cx="-18" cy="0" r="2" fill="#C9A15A"/>
+        <path d="M-6 0 L58 0 Q62 0 62 4 L62 50 L-6 50 Q-10 50 -10 46 L-10 4 Q-10 0 -6 0 Z" fill="url(#blade)" stroke="#6F7780" stroke-width="2"/>
+        <path d="M-8 48 L60 48" stroke="#FFFFFF" stroke-width="2.5" opacity=".85"/>
+        <circle cx="50" cy="10" r="4.5" fill="#3A0810" opacity=".55"/>
+        <circle cx="0" cy="0" r="15" fill="#A86B45"/>
+        <path d="M-8 -6 Q0 -11 9 -6" stroke="#8E5634" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+</svg><span class="hero-cap">Cut fresh every morning · ప్రతి రోజూ తాజా</span></div>
     </div>
     <div class="wrap facts"><div><b class="num">${SHOPS.length}</b><span>verified shops</span></div><div><b>3 towns</b><span>Korutla · Metpally · Jagtial</span></div><div><b>30 min</b><span>average delivery</span></div><div><b>5 AM</b><span>fresh cut daily</span></div></div>
   </section>
 
   <div class="wrap">
-    <section class="sec"><div class="sec-h"><div><h2>How to order</h2><p>Three simple steps. No login needed to look around.</p></div></div>
+    <section class="sec"><div class="sec-h"><div><h2>How to order <span class="te-h">· ఎలా ఆర్డర్ చేయాలి</span></h2><p>Three simple steps. No login needed to look around.</p></div></div>
       <div class="how">
-        <div><span class="hn">1</span><img src="${here[0].photo}" alt="" class="ava"><b>Pick your butcher</b><p>See each owner's photo, shop name and distance. Choose the one you trust.</p></div>
-        <div><span class="hn">2</span><img src="${IMG('curry-1')}" alt=""><b>Choose cut and weight</b><p>Curry cut, keema, boti, paya. Pick 250 g to 2 kg and add a note like "small pieces".</p></div>
-        <div><span class="hn">3</span><img src="${IMG('banner-biryani-3')}" alt=""><b>Get it at your door</b><p>The owner cuts it fresh. Our rider delivers in about 30 minutes. Pay by UPI or cash.</p></div>
+        <div><span class="hn">1</span><img src="${here[0].photo}" alt="" class="ava"><b>Pick your butcher</b><span class="te-s">మీ కటికెను ఎంచుకోండి</span><p>See each owner's photo, shop name and distance. Choose the one you trust.</p></div>
+        <div><span class="hn">2</span><img src="${IMG('curry-1')}" alt=""><b>Choose cut and weight</b><span class="te-s">ముక్క, బరువు ఎంచుకోండి</span><p>Curry cut, keema, boti, paya. Pick 250 g to 2 kg and add a note like "small pieces".</p></div>
+        <div><span class="hn">3</span><img src="${IMG('banner-biryani-3')}" alt=""><b>Get it at your door</b><span class="te-s">ఇంటికే డెలివరీ</span><p>The owner cuts it fresh. Our rider delivers in about 30 minutes. Pay by UPI or cash.</p></div>
       </div></section>
 
     ${reg?`<section class="sec"><div class="regular"><img class="ava" src="${reg.photo}" alt="${reg.owner}"><div class="t"><small>♥ YOUR SHOP</small><h3>${reg.name} · ${reg.owner}</h3><p>Last order: 1 kg curry cut · 500 g keema · ${inr(1290)}</p></div><button class="btn btn-brand" type="button" id="reorder">Order again</button></div></section>`:''}
 
-    <section class="sec" id="allShops"><div class="sec-h"><div><h2>${cp?`Shops with ${cp.short.toLowerCase()} in ${town}`:`Shops near you in ${town}`}</h2><p>${cp?'Lowest price first':list.length+' shops · tap a shop to see its menu'}</p></div></div>
+    <section class="sec" id="allShops"><div class="sec-h"><div><h2>${cp?`Shops with ${cp.short.toLowerCase()} in ${town}`:`Shops near you in ${town}`} <span class="te-h">· మీ దగ్గరలోని షాపులు</span></h2><p>${cp?'Lowest price first':list.length+' shops · tap a shop to see its menu'}</p></div></div>
       <div class="chips" role="group" aria-label="Sort and filter">${[['near','Nearest'],['top','Top rated'],['open','Open now']].map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${filt.has(k)}">${l}</button>`).join('')}</div>
       <div class="shops big">${list.length?list.map(scard).join(''):'<div class="empty"><b>No shops open right now</b>Remove "Open now" to see all shops. You can pre-order.</div>'}</div>
     </section>
-    <section class="sec"><div class="sec-h"><div><h2>Choose your cut</h2><p>Tap a cut to see which shops have it and at what price.</p></div>${cutFilter?'<button class="more" type="button" id="clearCut">Show all shops</button>':''}</div>
+    <section class="sec"><div class="sec-h"><div><h2>Choose your cut <span class="te-h">· మీకు కావాల్సిన ముక్క</span></h2><p>Tap a cut to see which shops have it and at what price.</p></div>${cutFilter?'<button class="more" type="button" id="clearCut">Show all shops</button>':''}</div>
       <div class="cutgrid">${showCuts.map(k=>{const p=PRODUCTS.find(x=>x.k===k);const low=Math.min(...here.filter(s=>!s.hide.includes(k)).map(s=>priceFor(s,p)));
-        return `<button class="cutg" type="button" data-cut="${k}" aria-pressed="${cutFilter===k}"><img src="${IMG(p.imgs[p.imgs.length-1])}" alt="" loading="lazy"><b>${p.short}</b><span class="num">from ${p.per?inr(low)+' / '+p.unit:inr(low/2)+' / 500 g'}</span></button>`}).join('')}</div></section>
+        return `<button class="cutg" type="button" data-cut="${k}" aria-pressed="${cutFilter===k}"><img src="${IMG(p.imgs[p.imgs.length-1])}" alt="" loading="lazy"><b>${p.short}${TE(p.te)}</b><span class="num">from ${p.per?inr(low)+' / '+p.unit:inr(low/2)+' / 500 g'}</span></button>`}).join('')}</div></section>
 
-    <section class="sec"><div class="sec-h"><div><h2>Meet the butchers in ${town}</h2><p>Every owner's photo is checked with Aadhaar KYC by our team</p></div></div>
+    <section class="sec"><div class="sec-h"><div><h2>Meet the butchers in ${town} <span class="te-h">· మా కటికె వాళ్ళు</span></h2><p>Every owner's photo is checked with Aadhaar KYC by our team</p></div></div>
       <div class="scroller">${here.slice().sort((a,b)=>a.km-b.km).map(s=>`<a class="face" href="#shop-${s.id.toLowerCase()}"><span class="ring"><img class="ava" src="${s.photo}" alt="${s.owner}" loading="lazy">${kycTick}</span><b>${s.owner}</b><span>${s.name}</span><span class="rating">${star}${s.rating}</span></a>`).join('')}</div></section>
 
 
     <section class="sec offer-strip"><div><b>New to Are Katike?</b><span>Get ₹75 off your first order above ₹499. Code <b>AREKATIKE75</b> is applied in the cart.</span></div><img src="${IMG('banner-nalli')}" alt=""></section>
 
-    <section class="sec"><div class="sec-h"><div><h2>Why customers trust us</h2></div></div><div class="trust">
+    <section class="sec"><div class="sec-h"><div><h2>Why customers trust us <span class="te-h">· మమ్మల్ని ఎందుకు నమ్మాలి</span></h2></div></div><div class="trust">
       <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg><span><b>Real owner photo</b><span>The same face you see at the shop counter.</span></span></div>
       <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span><b>KYC and FSSAI checked</b><span>Every shop is verified before it goes live.</span></span></div>
       <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v13H3zM3 7l3-4h12l3 4"/></svg><span><b>Cut after you order</b><span>Sealed bag with a weight slip.</span></span></div>
@@ -712,7 +825,7 @@ function viewHome(){
     <div class="wrap about-in">
       <img src="logo-640.jpg" alt="Are Katike emblem">
       <div>
-        <small>ABOUT US</small>
+        <small>ABOUT US · మా గురించి</small>
         <h2>Are Katike cuts</h2>
         <p>For generations, Katike families have cut fresh mutton for their neighbours. Customers stayed loyal to one butcher because they knew his face, his shop and his honest weight.</p>
         <p>Are Katike brings that trust online. Every shop on this website is run by a real, verified owner from your own town. You see who cuts your meat, and you can keep buying from the same butcher every week.</p>
@@ -734,14 +847,14 @@ function viewHome(){
 
 /* ================= SEARCH ================= */
 const SUG=['curry cut','keema','paya','liver','boti','Varun','Mahathi','boneless','chops','brain'];
-function matchProd(p,q){q=q.toLowerCase();return (p.name+' '+p.short+' '+p.syn+' '+p.k).toLowerCase().includes(q)}
+function matchProd(p,q){q=q.toLowerCase();return (p.name+' '+p.short+' '+p.syn+' '+p.k+' '+p.te).toLowerCase().includes(q)}
 function matchShop(s,q){q=q.toLowerCase();return (s.name+' '+s.owner+' '+s.area+' '+s.id+' '+s.town).toLowerCase().includes(q)}
 function viewSearch(){
   const q=query.trim();
   if(!q){
     V.innerHTML=`<div class="wrap">
       ${recent.length?`<section class="sec"><div class="sec-h"><h2>Recent searches</h2><button class="more" type="button" id="clrRecent">Clear</button></div><div class="recent">${recent.map(r=>`<button class="chip" type="button" data-q="${esc(r)}">↺ ${esc(r)}</button>`).join('')}</div></section>`:''}
-      <section class="sec"><div class="sec-h"><h2>Popular cuts</h2></div><div class="popular">${MEATS.map(p=>`<button class="pop" type="button" data-q="${p.short}"><img src="${IMG(p.imgs[0])}" alt="" loading="lazy"><b>${p.short}</b></button>`).join('')}</div></section>
+      <section class="sec"><div class="sec-h"><h2>Popular cuts</h2></div><div class="popular">${MEATS.map(p=>`<button class="pop" type="button" data-q="${p.short}"><img src="${IMG(p.imgs[0])}" alt="" loading="lazy"><b>${p.short}${TE(p.te)}</b></button>`).join('')}</div></section>
       <section class="sec"><div class="sec-h"><h2>Butchers in ${town}</h2></div><div class="scroller">${SHOPS.filter(s=>s.town===town).map(s=>`<a class="face" href="#shop-${s.id.toLowerCase()}"><span class="ring"><img class="ava" src="${s.photo}" alt="${s.owner}" loading="lazy">${kycTick}</span><b>${s.owner}</b><span>${s.name}</span></a>`).join('')}</div></section></div>`;
     const c=$('#clrRecent'); if(c) c.onclick=()=>{recent=[];store.set('ak_recent',recent);viewSearch()};
     return;
@@ -792,7 +905,7 @@ function viewShop(id){
    <label class="msearch" for="mq"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="mq" type="search" placeholder="Search in ${esc(s.name)}" value="${esc(menuQ)}" autocomplete="off"></label>
    <div class="chips" style="margin-top:12px">${cats.map(c=>`<button class="chip" type="button" data-jump="${c}">${c}</button>`).join('')}</div>
    ${cats.length?cats.map(cat=>`<div class="cat" id="cat-${cat.replace(/\W+/g,'-')}"><h2>${cat} (${list.filter(p=>p.cat===cat).length})</h2>
-     ${list.filter(p=>p.cat===cat).map(p=>{const o=isOut(s,p);return `<div class="item${o?' oos':''}"><div style="min-width:0">${p.tag&&!o?`<span class="tag">★ ${p.tag}</span>`:''}<h3>${p.name}</h3><p class="pr num">${unitTxt(s,p)}${!p.addon&&!p.per?` · <small>${inr(priceFor(s,p))}/kg</small>`:''}</p><p class="ds">${p.desc}</p>${!p.addon&&!p.per?`<div class="wt"><span>250 g</span><span>500 g</span><span>1 kg</span><span>2 kg</span></div>`:''}</div>
+     ${list.filter(p=>p.cat===cat).map(p=>{const o=isOut(s,p);return `<div class="item${o?' oos':''}"><div style="min-width:0">${p.tag&&!o?`<span class="tag">★ ${p.tag}</span>`:''}<h3>${p.name}${TE(p.te)}</h3><p class="pr num">${unitTxt(s,p)}${!p.addon&&!p.per?` · <small>${inr(priceFor(s,p))}/kg</small>`:''}</p><p class="ds">${p.desc}</p>${!p.addon&&!p.per?`<div class="wt"><span>250 g</span><span>500 g</span><span>1 kg</span><span>2 kg</span></div>`:''}</div>
        <div><div class="im"><img src="${imgFor(s,p)}" alt="${p.name}" loading="lazy">${addCtl(s,p)}</div>${!p.addon&&!o?'<p class="cust">Customisable</p>':''}</div></div>`}).join('')}</div>`).join(''):`<div class="empty" style="margin-top:14px"><b>Nothing called "${esc(menuQ)}" here</b>Try another cut.</div>`}
    <section class="sec"><div class="sec-h"><h2>Ratings & reviews</h2><span class="rating">${star}${s.rating}</span></div>
      <div class="scroller reviews">${[0,1,2,3].map(i=>{const r=REVIEWS[(s.n+i)%REVIEWS.length];return `<div class="rv"><div class="who"><span class="ini" style="background:${RCOL[(s.n+i)%RCOL.length]}">${r[0][0]}</span><div><b>${r[0]}</b><br><small>${'★'.repeat(r[2])}${'☆'.repeat(5-r[2])} · ${r[3]} · Verified order</small></div></div><p>${r[1]}</p></div>`}).join('')}</div></section>
@@ -813,7 +926,7 @@ function openProduct(s,p){
   const cuttable=['curry','boneless','chops'].includes(p.k);
   layer(`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pT">
     <img class="simg" src="${imgFor(s,p)}" alt="${p.name}">
-    <h2 id="pT">${p.name}</h2><p class="sub">${s.name} · cut by ${s.owner} · ${inr(price)}${p.per?' / '+p.unit:' / kg'}</p>
+    <h2 id="pT">${p.name}${TE(p.te)}</h2><p class="sub">${s.name} · cut by ${s.owner} · ${inr(price)}${p.per?' / '+p.unit:' / kg'}</p>
     <div class="opt"><b>${p.per?'Quantity':'Weight'}</b><div class="seg" data-g="w">${weights.map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${v===w}">${l}</button>`).join('')}</div></div>
     ${cuttable?`<div class="opt"><b>Piece size</b><div class="seg" data-g="size">${['Small','Medium','Large'].map(v=>`<button type="button" data-v="${v}" aria-pressed="${v===size}">${v}</button>`).join('')}</div></div>
     <div class="opt"><b>Fat</b><div class="seg" data-g="fat">${['With fat','Less fat'].map(v=>`<button type="button" data-v="${v}" aria-pressed="${v===fat}">${v}</button>`).join('')}</div></div>`:''}
@@ -831,7 +944,7 @@ function openProduct(s,p){
 function pushItem(s,p,w,opts,note){
   const price=priceFor(s,p);const unit=p.addon?price:p.per?price*w:price*w/1000;
   const same=cart.items.find(i=>i.k===p.k&&i.w===w&&i.opts===opts&&i.note===note);
-  if(same)same.qty++;else cart.items.push({k:p.k,name:p.name,img:imgFor(s,p),w,opts,note,unit,per:p.addon?p.unit:p.per?p.unit:null,addon:!!p.addon,qty:1});
+  if(same)same.qty++;else cart.items.push({k:p.k,name:p.name,te:p.te,img:imgFor(s,p),w,opts,note,unit,per:p.addon?p.unit:p.per?p.unit:null,addon:!!p.addon,qty:1});
 }
 function addItem(s,p,w,opts,note){
   if(cart.shop&&cart.shop!==s.id&&cart.items.length){
@@ -862,7 +975,7 @@ function viewCart(){
   const s=t.s;
   V.innerHTML=`<div class="wrap"><div class="cart-grid"><div>
     <div class="box"><div class="cshop"><img class="ava" src="${s.photo}" alt="${s.owner}"><div><b>${s.name}</b><p>${s.owner} will cut your order · ${s.area}, ${s.town} · ${eta(s)}</p></div></div></div>
-    <div class="box"><h3>Items</h3>${cart.items.map((i,n)=>`<div class="cline"><img src="${i.img}" alt=""><div style="min-width:0"><b>${i.name}</b><small>${i.addon?'':wLabel(i)+' · '}${esc(i.opts)}${i.note?' · "'+esc(i.note)+'"':''}</small></div>
+    <div class="box"><h3>Items</h3>${cart.items.map((i,n)=>`<div class="cline"><img src="${i.img}" alt=""><div style="min-width:0"><b>${i.name}${TE(i.te)}</b><small>${i.addon?'':wLabel(i)+' · '}${esc(i.opts)}${i.note?' · "'+esc(i.note)+'"':''}</small></div>
       <span class="stepper"><button type="button" data-cq="${n}|-1" aria-label="Less">−</button><span class="num">${i.qty}</span><button type="button" data-cq="${n}|1" aria-label="More">+</button></span><span class="amt num">${inr(i.unit*i.qty)}</span></div>`).join('')}
       <a class="more" href="#shop-${s.id.toLowerCase()}" style="display:inline-block;margin-top:10px">+ Add more items</a></div>
     <div class="box"><h3>Complete your mutton dish</h3><div class="scroller">${ADDONS.map(p=>pcard(s,p,false)).join('')}</div></div>
