@@ -1,0 +1,894 @@
+<title>Are Katike Cuts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Rozha+One&display=swap">
+<style>
+/* Layout: app shell. Sticky header (delivery time + town) → sticky search → views routed by hash: home, search, shop, cart, orders, my-shops, account. Mobile bottom nav; desktop top nav. */
+:root{
+  --bg:#FFFFFF; --soft:#F7F2F1; --surface:#FFFFFF; --ink:#22171A; --muted:#6E6266; --faint:#9A8E91; --line:#EEE5E4;
+  --brand:#8E1B2C; --brand-ink:#FFFFFF; --brand-soft:#FBEBED; --brand-deep:#4A0A15;
+  --gold:#C8912F; --gold-soft:#FBF1DE; --green:#1B8A4B; --green-soft:#E5F5EC; --amber:#A45D00; --amber-soft:#FCEFDC;
+  --shadow:0 1px 2px rgba(40,10,16,.06),0 6px 20px rgba(40,10,16,.08);
+  --f-ui:"Outfit","Segoe UI",system-ui,sans-serif; --f-brand:"Rozha One",Georgia,serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131011; --soft:#1C1718; --surface:#1E191A; --ink:#F4ECEC; --muted:#B6A8AA; --faint:#8B7E80; --line:#33292A;
+  --brand:#C93A50; --brand-ink:#FFFFFF; --brand-soft:#3A1A20; --brand-deep:#2A070D;
+  --gold:#E0AE52; --gold-soft:#33280F; --green:#2FA866; --green-soft:#13301F; --amber:#E7A94E; --amber-soft:#36250D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131011; --soft:#1C1718; --surface:#1E191A; --ink:#F4ECEC; --muted:#B6A8AA; --faint:#8B7E80; --line:#33292A;
+  --brand:#C93A50; --brand-ink:#FFFFFF; --brand-soft:#3A1A20; --brand-deep:#2A070D;
+  --gold:#E0AE52; --gold-soft:#33280F; --green:#2FA866; --green-soft:#13301F; --amber:#E7A94E; --amber-soft:#36250D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+h1,h2,h3,p{margin:0}
+h1,h2{text-wrap:balance;letter-spacing:-.01em}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+a{color:inherit;text-decoration:none}
+img{display:block}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hide-sm{display:initial}
+.scroller{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
+.scroller::-webkit-scrollbar{display:none}
+.scroller>*{scroll-snap-align:start;flex-shrink:0}
+.ava{border-radius:50%;object-fit:cover;background:var(--soft)}
+.tick{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--green);color:#fff;flex-shrink:0}
+.rating{display:inline-flex;align-items:center;gap:3px;background:var(--green);color:#fff;font-weight:700;font-size:12.5px;padding:1px 7px;border-radius:6px;line-height:1.5}
+.dot-sep::before{content:"•";margin:0 6px;color:var(--faint)}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.brand img{width:42px;height:42px;border-radius:50%}
+.wm{display:flex;flex-direction:column;align-items:center;line-height:1}
+.wm b{font-family:var(--f-brand);font-weight:400;font-size:19px;letter-spacing:.06em;color:var(--brand)}
+.wm i{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.5em;margin-right:-.5em;color:var(--gold);margin-top:3px}
+.deliver{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-width:0;padding-left:14px;border-left:1px solid var(--line)}
+.deliver .eta{font-weight:800;font-size:17px;display:flex;align-items:center;gap:6px}
+.deliver .eta svg{color:var(--brand)}
+.deliver .addr{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;display:flex;align-items:center;gap:2px}
+.nav{margin-left:auto;display:flex;align-items:center;gap:4px}
+.nav a{display:flex;align-items:center;gap:7px;text-decoration:none;font-weight:500;padding:8px 12px;border-radius:10px;color:var(--ink);position:relative}
+.nav a:hover{background:var(--soft)}
+.nav a[aria-current="page"]{color:var(--brand)}
+.count{background:var(--brand);color:var(--brand-ink);font-size:11px;font-weight:700;min-width:19px;height:19px;border-radius:10px;display:inline-grid;place-items:center;padding:0 5px}
+
+/* search bar */
+.searchbar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 63px);z-index:40;background:var(--bg);padding-block:12px 10px}
+.sbox{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:0 14px;height:50px;box-shadow:var(--shadow)}
+.sbox svg{color:var(--brand);flex-shrink:0}
+.sbox input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;color:var(--ink)}
+.sbox input::placeholder{color:var(--faint)}
+.sbox .clear{color:var(--muted);font-size:20px;line-height:1;padding:4px}
+
+/* sections */
+.sec{padding-block:18px 6px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+.sec-h h2{font-size:21px;font-weight:800}
+.sec-h p{color:var(--muted);font-size:14px}
+.more{color:var(--brand);font-weight:600;font-size:14px}
+.divider{height:8px;background:var(--soft);margin-top:18px}
+
+/* offers carousel */
+.offer{width:min(420px,84vw);height:170px;border-radius:20px;overflow:hidden;position:relative;color:#fff;display:flex;align-items:flex-end;text-align:left}
+.offer img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.offer::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(40,5,12,.92) 0%,rgba(40,5,12,.6) 55%,rgba(40,5,12,.05) 100%)}
+.offer>div{position:relative;z-index:1;padding:18px;max-width:72%}
+.offer small{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#F3C86B}
+.offer h3{font-size:22px;font-weight:800;line-height:1.1;margin-top:4px}
+.offer p{font-size:13px;opacity:.9;margin-top:6px}
+.offer .cta{display:inline-block;margin-top:10px;background:#fff;color:#4A0A15;font-weight:700;font-size:13px;padding:5px 12px;border-radius:8px}
+.offer.brandcard{background:radial-gradient(400px 200px at 85% 50%,#6E1020,transparent 70%),#3A0810}
+.offer.brandcard::after{display:none}
+.offer.brandcard img{left:auto;right:12px;top:50%;transform:translateY(-50%);width:130px;height:130px;border-radius:50%;inset:auto 12px auto auto}
+
+/* cut circles */
+.cutc{width:96px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px}
+.cutc img{width:84px;height:84px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px var(--surface),0 0 0 4px var(--line)}
+.cutc span{font-size:13.5px;font-weight:600;line-height:1.15}
+.cutc[aria-pressed="true"] img{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--brand)}
+
+/* butcher faces rail */
+.face{width:118px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.face .ring{position:relative}
+.face img{width:96px;height:96px;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--gold)}
+.face .ring .tick{position:absolute;right:2px;bottom:4px;width:22px;height:22px;border:2px solid var(--surface)}
+.face b{font-size:14.5px;margin-top:4px}
+.face span{font-size:12px;color:var(--muted);line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* regular shop */
+.regular{display:flex;flex-wrap:wrap;gap:14px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(100deg,var(--brand-soft),var(--surface) 70%)}
+.regular img.ava{width:64px;height:64px;border:2px solid var(--gold);flex-shrink:0}
+.regular .t{min-width:0;flex:1}
+.regular small{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--brand)}
+.regular h3{font-size:17px;font-weight:700}
+.regular p{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;border-radius:12px;padding:11px 18px;white-space:nowrap}
+.btn-brand{background:var(--brand);color:var(--brand-ink)}
+.btn-brand:hover{filter:brightness(1.08)}
+.btn-line{border:1px solid var(--line);background:var(--surface)}
+.btn-block{width:100%}
+
+/* product cards (rails, search) */
+.pcard{width:158px;display:flex;flex-direction:column;gap:6px;text-align:left}
+.pcard .pi{position:relative}
+.pcard .pi img{width:158px;height:132px;object-fit:cover;border-radius:14px;background:var(--soft)}
+.pcard .pi .addbtn{position:absolute;right:8px;bottom:-12px}
+.pcard .pt{margin-top:10px;font-size:14px;font-weight:600;line-height:1.2}
+.pcard .pw{font-size:12px;color:var(--muted)}
+.pcard .pp{font-weight:700;font-size:15px}
+.pcard .pp s{font-weight:400;color:var(--faint);font-size:12px;margin-left:4px}
+.pcard .by{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);min-width:0}
+.pcard .by img{width:20px;height:20px}
+.pcard .by span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addbtn{background:var(--surface);color:var(--green);border:1px solid var(--line);font-weight:800;font-size:14px;letter-spacing:.04em;border-radius:10px;padding:6px 18px;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.addbtn:hover{background:var(--green-soft)}
+.addbtn[disabled]{color:var(--faint);box-shadow:none;cursor:not-allowed;font-size:11px;padding:7px 10px}
+.stepper{display:inline-flex;align-items:center;background:var(--green);color:#fff;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.12);font-weight:800}
+.stepper button{color:#fff;width:32px;height:32px;font-size:18px;font-weight:800}
+.stepper span{min-width:18px;text-align:center;font-size:14px}
+
+/* filters */
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-block:4px 12px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:500;display:inline-flex;align-items:center;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.chip[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:700}
+.sticky-chips{position:sticky;top:calc(env(safe-area-inset-top,0px) + 135px);z-index:30;background:var(--bg)}
+
+/* shop cards (Swiggy-style) */
+.shops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 22px}
+.scard{display:flex;flex-direction:column;gap:10px;text-align:left;transition:transform .15s}
+.scard:hover{transform:scale(.98)}
+.scard .cov{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/3;background:var(--soft);max-width:100%}
+.scard .cov>img.c{width:100%;height:100%;object-fit:cover}
+.scard .cov::after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.82))}
+.scard .deal{position:absolute;left:12px;bottom:8px;z-index:1;color:#fff;font-weight:800;font-size:18px;letter-spacing:-.01em;line-height:1.1}
+.scard .owner{position:absolute;right:10px;bottom:10px;z-index:1;width:54px;height:54px;border:3px solid #fff}
+.scard .fav{position:absolute;right:10px;top:10px;z-index:1;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.95);color:#8E1B2C;display:grid;place-items:center}
+.scard .fav[aria-pressed="true"] svg{fill:#C0182F;stroke:#C0182F}
+.scard .closed-tag{position:absolute;left:10px;top:10px;z-index:1;background:rgba(0,0,0,.72);color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px}
+.scard.closed .cov>img.c{filter:grayscale(.85)}
+.scard .info{padding-inline:4px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.scard h3{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scard .meta{display:flex;align-items:center;font-weight:600;font-size:14.5px}
+.scard .sub{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scard .who{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.empty{grid-column:1/-1;text-align:center;padding:36px 16px;color:var(--muted);background:var(--soft);border-radius:18px}
+.empty b{color:var(--ink);display:block;font-size:17px;margin-bottom:4px}
+
+/* trust strip */
+.trust{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.trust div{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--soft)}
+.trust svg{color:var(--brand);flex-shrink:0;margin-top:2px}
+.trust b{display:block;font-size:14.5px}
+.trust span{font-size:13px;color:var(--muted)}
+.community{margin-top:26px;border-radius:22px;background:radial-gradient(500px 240px at 90% 50%,#6E1020,transparent 70%),#2E060D;color:#FBEFE6;display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;padding:24px}
+.community img{width:110px;height:110px;border-radius:50%}
+.community small{color:#E2B04E;font-weight:700;letter-spacing:.12em;font-size:11px}
+.community h3{font-family:var(--f-brand);font-weight:400;font-size:28px;line-height:1.1;margin-top:4px}
+.community p{color:#E3C3B9;font-size:14px;margin-top:6px;max-width:60ch}
+.btn-gold{background:#E2B04E;color:#3A0810}
+
+/* search view */
+.recent{display:flex;flex-wrap:wrap;gap:8px}
+.popular{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.pop{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:8px;text-align:left}
+.pop img{width:46px;height:46px;border-radius:10px;object-fit:cover}
+.pop b{font-size:14px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tabs button{padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--brand);border-color:var(--brand)}
+.res{border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--surface);box-shadow:var(--shadow)}
+.res+.res{margin-top:16px}
+.res-h{display:flex;align-items:center;gap:12px;text-align:left;width:100%}
+.res-h img.ava{width:58px;height:58px;border:2px solid var(--gold);flex-shrink:0}
+.res-h .t{flex:1;min-width:0}
+.res-h h3{font-size:17px;font-weight:700;display:flex;align-items:center;gap:6px;min-width:0}
+.res-h h3 span.n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res-h p{font-size:13px;color:var(--muted);display:flex;align-items:center;flex-wrap:wrap}
+.res-h .go{color:var(--brand);font-weight:700;font-size:13px;white-space:nowrap}
+.res .scroller{margin-top:14px;padding-bottom:16px}
+mark{background:var(--gold-soft);color:inherit;border-radius:3px;padding:0 1px}
+.res-note{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* shop page */
+.sp-top{display:flex;align-items:center;justify-content:space-between;padding-block:10px}
+.sp-top button{display:flex;align-items:center;gap:6px;font-weight:600}
+.sp-card{border-radius:24px;padding:18px;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(160deg,var(--line),var(--line)) border-box;border:1px solid var(--line);box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.sp-card h1{font-size:26px;font-weight:800}
+.sp-card .meta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 0;font-weight:600;margin-top:6px}
+.sp-card .line{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;color:var(--muted)}
+.sp-card .line b{color:var(--ink);font-weight:600}
+.sp-owner{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.sp-owner img{width:112px;height:112px;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--gold)}
+.sp-owner b{font-size:14px}
+.sp-owner span{font-size:12px;color:var(--green);font-weight:700;display:flex;align-items:center;gap:4px}
+.quote{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--soft);font-size:14px;color:var(--muted);grid-column:1/-1}
+.quote b{color:var(--ink)}
+.gal img{width:220px;height:150px;border-radius:16px;object-fit:cover}
+.deals .deal{border:1px solid var(--line);border-radius:16px;padding:10px 14px;display:flex;gap:10px;align-items:center;min-width:240px}
+.deals .deal i{font-style:normal;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);font-weight:800}
+.deals .deal b{display:block;font-size:14.5px}
+.deals .deal span{font-size:12.5px;color:var(--muted)}
+.menu-h{text-align:center;font-size:13px;letter-spacing:.3em;color:var(--muted);font-weight:600;margin-block:22px 10px}
+.msearch{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:12px;padding:0 12px;height:44px}
+.msearch input{flex:1;border:0;outline:0;background:none;font:inherit;color:var(--ink)}
+.cat{padding-top:10px}
+.cat>h2{font-size:19px;font-weight:800;padding-block:10px;border-bottom:1px solid var(--line)}
+.item{display:grid;grid-template-columns:1fr 150px;gap:16px;padding-block:20px;border-bottom:1px dashed var(--line)}
+.item .tag{font-size:12px;font-weight:700;color:var(--amber);display:flex;align-items:center;gap:4px}
+.item h3{font-size:17px;font-weight:700;margin-top:2px}
+.item .pr{font-weight:600;margin-top:2px}
+.item .pr small{color:var(--muted);font-weight:400}
+.item .ds{font-size:14px;color:var(--muted);margin-top:6px}
+.item .wt{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.item .wt span{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--muted)}
+.item .im{position:relative;align-self:start}
+.item .im img{width:150px;height:140px;object-fit:cover;border-radius:16px;background:var(--soft)}
+.item .im .addbtn,.item .im .stepper{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%)}
+.item .im .addbtn{padding:7px 26px}
+.item .cust{font-size:11px;color:var(--faint);text-align:center;margin-top:18px}
+.item.oos{opacity:.55}
+.reviews .rv{width:290px;border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.rv .who{display:flex;align-items:center;gap:10px}
+.rv .ini{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px}
+.rv b{font-size:14px}
+.rv small{color:var(--muted);font-size:12px}
+.rv p{font-size:14px;color:var(--muted)}
+.legal{margin-top:20px;padding:16px;background:var(--soft);border-radius:16px;font-size:13px;color:var(--muted);display:grid;gap:6px}
+.legal b{color:var(--ink)}
+
+/* cart page */
+.cart-grid{display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;padding-block:16px 40px}
+.cart-grid>*{min-width:0}
+.box{border:1px solid var(--line);border-radius:18px;padding:16px;background:var(--surface)}
+.box+.box{margin-top:14px}
+.box h3{font-size:16px;font-weight:700;margin-bottom:10px}
+.cshop{display:flex;align-items:center;gap:12px}
+.cshop img.ava{width:52px;height:52px;border:2px solid var(--gold)}
+.cshop b{font-size:17px}
+.cshop p{font-size:13px;color:var(--muted)}
+.cline{display:grid;grid-template-columns:52px 1fr auto auto;gap:12px;align-items:center;padding-block:12px;border-bottom:1px solid var(--line)}
+.cline:last-child{border-bottom:0}
+.cline img{width:52px;height:52px;border-radius:10px;object-fit:cover}
+.cline b{font-size:14.5px;display:block}
+.cline small{font-size:12.5px;color:var(--muted);display:block}
+.cline .stepper{background:var(--surface);color:var(--green);border:1px solid var(--line);box-shadow:none}
+.cline .stepper button{color:var(--green)}
+.cline .amt{font-weight:600;min-width:64px;text-align:right}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px;font-weight:500;background:var(--surface)}
+.seg button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:700}
+.coupon{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.coupon b{color:var(--green)}
+.bill div{display:flex;justify-content:space-between;padding-block:4px;font-size:14px;color:var(--muted)}
+.bill div span:last-child{color:var(--ink)}
+.bill .save span{color:var(--green)!important}
+.bill .tot{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;font-weight:800;font-size:17px;color:var(--ink)}
+.pay{position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px)}
+.addr{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.addr svg{color:var(--brand);flex-shrink:0;margin-top:2px}
+.addr p{color:var(--muted);font-size:13px}
+
+/* orders */
+.track{border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+.track-top{background:linear-gradient(120deg,#5A0C18,#8E1B2C);color:#fff;padding:18px;display:flex;gap:14px;align-items:center}
+.track-top img{width:64px;height:64px;border:3px solid #fff}
+.track-top h2{font-size:20px;font-weight:800}
+.track-top p{opacity:.85;font-size:14px}
+.track-top .mins{margin-left:auto;text-align:center;background:rgba(255,255,255,.14);border-radius:14px;padding:8px 12px}
+.track-top .mins b{display:block;font-size:24px;line-height:1}
+.track-top .mins span{font-size:11px;opacity:.85}
+.steps{padding:18px;display:grid;gap:0}
+.st{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:start;position:relative;padding-bottom:18px}
+.st:not(:last-child)::before{content:"";position:absolute;left:13px;top:26px;bottom:0;width:2px;background:var(--line)}
+.st.done:not(:last-child)::before{background:var(--green)}
+.st i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--faint);font-style:normal;font-size:13px;font-weight:700;border:2px solid var(--line)}
+.st.done i{background:var(--green);border-color:var(--green);color:#fff}
+.st.now i{border-color:var(--green);color:var(--green);background:var(--green-soft)}
+.st b{font-size:15px}
+.st p{font-size:13px;color:var(--muted)}
+.st small{color:var(--faint);font-size:12px}
+.rider{display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line)}
+.rider img{width:48px;height:48px}
+.rider .t{flex:1}
+.rider p{font-size:13px;color:var(--muted)}
+.otp{font-weight:800;letter-spacing:.2em;background:var(--gold-soft);color:var(--ink);padding:6px 10px;border-radius:10px}
+.past{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.porder{border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.porder .h{display:flex;gap:10px;align-items:center}
+.porder .h img{width:44px;height:44px}
+.porder .h b{display:block}
+.porder .h small{color:var(--muted)}
+.porder p{font-size:14px;color:var(--muted)}
+.porder .f{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed var(--line);padding-top:10px}
+.delivered{color:var(--green);font-size:12.5px;font-weight:700}
+
+/* account */
+.acc{display:grid;grid-template-columns:320px 1fr;gap:24px;padding-block:20px 40px}
+.prof{border-radius:20px;background:linear-gradient(140deg,#4A0A15,#8E1B2C);color:#fff;padding:20px}
+.prof b{font-size:20px;display:block}
+.prof p{opacity:.85;font-size:14px}
+.menu-list button,.menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 4px;border-bottom:1px solid var(--line);text-align:left;text-decoration:none;font-weight:500}
+.menu-list span{color:var(--muted);font-size:13px;font-weight:400}
+
+/* bottom nav + cart bar */
+.bnav{display:none}
+.cartbar{position:fixed;left:0;right:0;bottom:0;z-index:45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.cartbar button{pointer-events:auto;max-width:640px;margin:0 auto;width:100%;display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;border-radius:16px;padding:13px 18px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.cartbar small{display:block;font-weight:500;font-size:12px;opacity:.9}
+
+/* sheet, toast */
+.scrim{position:fixed;inset:0;background:rgba(15,5,8,.6);z-index:80;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);color:var(--ink);width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.5}}
+@media (min-width:700px){.scrim{align-items:center}.sheet{border-radius:24px}}
+.sheet .simg{width:100%;height:220px;object-fit:cover;border-radius:16px}
+.sheet h2{font-size:22px;font-weight:800;margin-top:12px}
+.sheet .sub{color:var(--muted);font-size:14px}
+.opt{margin-top:16px}
+.opt>b{display:block;font-size:14px;margin-bottom:8px}
+.sheet textarea{width:100%;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px;font:inherit;resize:vertical;min-height:56px}
+.sheet-foot{margin-top:18px;display:flex;gap:10px}
+.sheet-foot .btn{flex:1}
+.toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-size:14px;z-index:90;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
+footer{border-top:1px solid var(--line);margin-top:30px;padding-block:22px 120px;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
+.credits{width:100%}
+.credits summary{cursor:pointer}
+.credits ul{margin:8px 0 0;padding-left:18px;columns:3;column-gap:28px;font-size:12px}
+.credits li{break-inside:avoid;margin-bottom:3px}
+
+/* responsive */
+@media (max-width:1100px){.shops{grid-template-columns:repeat(3,minmax(0,1fr))}.popular{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:900px){
+  .nav{display:none}
+  .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:46;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .bnav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;text-decoration:none;font-size:11px;font-weight:600;color:var(--muted);position:relative}
+  .bnav a[aria-current="page"]{color:var(--brand)}
+  .bnav a[aria-current="page"]::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--brand)}
+  .bnav .count{position:absolute;top:4px;left:calc(50% + 6px)}
+  .cartbar{bottom:calc(58px + env(safe-area-inset-bottom,0px));padding-bottom:10px}
+  .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+  .shops{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .trust{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cart-grid,.acc{grid-template-columns:1fr}
+  .pay{position:static}
+  .past{grid-template-columns:1fr}
+  .credits ul{columns:1}
+}
+@media (max-width:620px){
+  .wm{display:none}
+  .regular .btn{width:100%}
+  .sec-h{flex-wrap:wrap}
+  .shops{grid-template-columns:1fr;gap:22px}
+  .scard{display:grid;grid-template-columns:140px 1fr;gap:14px;align-items:center}
+  .scard .cov{aspect-ratio:auto;height:160px}
+  .scard .deal{font-size:14px;left:8px;right:8px;bottom:6px}
+  .scard .owner{width:44px;height:44px;right:auto;left:8px;top:8px;bottom:auto}
+  .scard .fav{display:none}
+  .scard .closed-tag{top:auto;bottom:34px;left:8px}
+  .scard h3{white-space:normal;font-size:16.5px}
+  .community{grid-template-columns:1fr;text-align:left}
+  .community img{width:80px;height:80px}
+  .popular{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sp-card{grid-template-columns:1fr auto;padding:14px}
+  .sp-card h1{font-size:21px}
+  .sp-owner img{width:84px;height:84px}
+  .item{grid-template-columns:1fr 124px}
+  .item .im img{width:124px;height:118px}
+  .gal img{width:180px;height:124px}
+  .deliver .addr{max-width:170px}
+  .trust{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="Are Katike cuts, home"><img src="logo-128.jpg" alt="" width="42" height="42"><span class="wm"><b>ARE KATIKE</b><i>cuts</i></span></a>
+    <button class="deliver" type="button" id="locBtn">
+      <span class="eta"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="etaTxt">Delivery in 28 min</span></span>
+      <span class="addr"><span id="addrTxt">Home · Jagtial road, Korutla</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="#search" data-nav="search"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search</a>
+      <a href="#my-shops" data-nav="my-shops"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-9-9.3C1.7 7.3 4 4 7.3 4c2 0 3.5 1.1 4.7 2.7C13.2 5.1 14.7 4 16.7 4 20 4 22.3 7.3 21 10.7 19 15.6 12 20 12 20z"/></svg>My shops</a>
+      <a href="#orders" data-nav="orders"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Orders</a>
+      <a href="#account" data-nav="account"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Account</a>
+      <a href="#cart" data-nav="cart"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>Cart <span class="count num" data-count hidden>0</span></a>
+    </nav>
+  </div>
+</header>
+
+<div class="searchbar" id="searchbar">
+  <div class="wrap">
+    <label class="sbox" for="q">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" autocomplete="off" placeholder='Search "curry cut"' aria-label="Search shops, owners and cuts">
+      <button class="clear" type="button" id="qClear" aria-label="Clear search" hidden>×</button>
+    </label>
+  </div>
+</div>
+
+<main id="view"></main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Are Katike cuts · Korutla · Metpally · Jagtial, Telangana</span>
+    <span>Help · WhatsApp support · Privacy · Terms · Sell on Are Katike</span>
+    <details class="credits"><summary>Photo credits (Wikimedia Commons, owner portraits AI-generated)</summary><ul id="creditList"></ul></details>
+  </div>
+</footer>
+
+<nav class="bnav" aria-label="Main">
+  <a href="#" data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="#search" data-nav="search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search</a>
+  <a href="#my-shops" data-nav="my-shops"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-9-9.3C1.7 7.3 4 4 7.3 4c2 0 3.5 1.1 4.7 2.7C13.2 5.1 14.7 4 16.7 4 20 4 22.3 7.3 21 10.7 19 15.6 12 20 12 20z"/></svg>My shops</a>
+  <a href="#orders" data-nav="orders"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Orders</a>
+  <a href="#cart" data-nav="cart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>Cart<span class="count num" data-count hidden>0</span></a>
+</nav>
+
+<div class="cartbar" id="cartbar" hidden><button type="button" id="cartbarBtn"><span><span id="cbItems"></span><small id="cbShop"></small></span><span>View cart ›</span></button></div>
+<div id="layer"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const IMG=n=>'img/'+n+'.jpg';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const V=$('#view');
+
+/* ================= DATA ================= */
+const PRODUCTS=[
+ {k:'curry',name:'Mutton curry cut',short:'Curry cut',desc:'Bone-in pieces with a little fat, about 1.5 inch. Best for curry and biryani.',cat:'Curry cut',d:0,imgs:['curry-1','curry-2'],tag:'Bestseller',syn:'curry mutton goat biryani'},
+ {k:'boneless',name:'Boneless mutton',short:'Boneless',desc:'Lean leg cubes, no bone. For fry, kebab and pepper fry.',cat:'Boneless',d:180,imgs:['boneless-1'],syn:'boneless cubes leg fry'},
+ {k:'keema',name:'Mutton keema',short:'Keema',desc:'Fresh minced mutton, ground twice. For keema curry and parota.',cat:'Keema',d:80,imgs:['keema-1','keema-2','keema-3','keema-4'],tag:'Popular',syn:'keema kheema mince minced kima'},
+ {k:'chops',name:'Mutton chops',short:'Chops',desc:'Rib chops for fry and gravy.',cat:'Chops',d:60,imgs:['chops-1','chops-2'],syn:'chops ribs chaap'},
+ {k:'liver',name:'Liver (kaleji)',short:'Liver',desc:'Fresh liver, washed and cleaned. For liver fry.',cat:'Liver, kidney & boti',d:-120,imgs:['liver-1','liver-2','liver-3'],syn:'liver kaleji kaleja'},
+ {k:'kidney',name:'Kidney (gurda)',short:'Kidney',desc:'Cleaned, outer fat removed.',cat:'Liver, kidney & boti',d:-140,imgs:['kidney-1','kidney-2'],syn:'kidney gurda gurde'},
+ {k:'boti',name:'Boti',short:'Boti',desc:'Tripe, washed in hot water and cut small.',cat:'Liver, kidney & boti',d:-360,imgs:['boti-1'],syn:'boti tripe pegulu'},
+ {k:'paya',name:'Paya (trotters)',short:'Paya',desc:'Set of 4 legs, roasted on fire and cleaned. For paya soup.',cat:'Head, legs & brain',per:240,unit:'set',imgs:['paya-1','paya-2'],syn:'paya trotters legs kaallu nalli'},
+ {k:'head',name:'Head meat (thalakaya)',short:'Head meat',desc:'Whole head, roasted, cleaned and cut.',cat:'Head, legs & brain',per:350,unit:'piece',imgs:['head-1'],syn:'head thalakaya talakaya siri'},
+ {k:'brain',name:'Brain (bheja)',short:'Brain',desc:'Fresh, one piece. For brain fry.',cat:'Head, legs & brain',per:120,unit:'piece',imgs:['brain-1','brain-2'],syn:'brain bheja maghaz'},
+ {k:'masala',name:'Mutton masala powder',short:'Mutton masala',desc:'Home-ground by the shop, 100 g.',cat:'Masalas & extras',addon:1,price:60,unit:'pack',imgs:['addon-masala'],syn:'masala powder'},
+ {k:'spices',name:'Biryani spice kit',short:'Biryani spices',desc:'Whole spices for 1 kg biryani.',cat:'Masalas & extras',addon:1,price:90,unit:'kit',imgs:['addon-spices'],syn:'biryani spices kit'},
+ {k:'garam',name:'Garam masala (whole)',short:'Garam masala',desc:'Cloves, cinnamon, cardamom, star anise. 50 g.',cat:'Masalas & extras',addon:1,price:55,unit:'pack',imgs:['addon-garam'],syn:'garam masala whole'},
+ {k:'curd',name:'Fresh curd',short:'Curd',desc:'500 g, for marination.',cat:'Masalas & extras',addon:1,price:40,unit:'pack',imgs:['addon-curd'],syn:'curd perugu dahi'},
+ {k:'lemon',name:'Lemons',short:'Lemons',desc:'Pack of 4.',cat:'Masalas & extras',addon:1,price:20,unit:'pack',imgs:['addon-lemon'],syn:'lemon nimmakaya'},
+ {k:'mint',name:'Mint leaves',short:'Mint',desc:'1 fresh bunch.',cat:'Masalas & extras',addon:1,price:10,unit:'bunch',imgs:['addon-mint'],syn:'mint pudina'}
+];
+const MEATS=PRODUCTS.filter(p=>!p.addon);
+const ADDONS=PRODUCTS.filter(p=>p.addon);
+
+const TOWNS={Korutla:'Jagtial road, Korutla',Metpally:'Armoor road, Metpally',Jagtial:'Old bus stand, Jagtial'};
+const DEALS=['₹50 OFF ABOVE ₹999','FREE DELIVERY','10% OFF UPTO ₹80','FREE 100 G LIVER ON 2 KG','₹75 OFF FIRST ORDER','₹40 OFF ABOVE ₹699',null,'FREE DELIVERY'];
+const RAW=[
+ // town, name, owner, area, km, rating, ratings, orders, since, open, price, types, cover, hide, out
+ ['Korutla','Varun Mutton Shop','Varun','Jagtial road',1.2,4.7,'1.8k','6.2k',2011,1,780,'goat','shop-04'],
+ ['Korutla','Bhavani Mutton Centre','Narsimha','Near bus stand',0.9,4.8,'2.4k','9.1k',1998,1,780,'goat,sheep','shop-01'],
+ ['Korutla','Sri Venkateshwara Mutton','Ramesh','Main road',1.6,4.6,'1.1k','4.3k',2009,1,760,'goat','curry-1'],
+ ['Korutla','Shivaji Fresh Cuts','Raju','Vegetable market',2.3,4.5,'840','3.0k',2012,0,770,'goat','shop-08','','',"6 AM"],
+ ['Korutla','Sri Rama Mutton Stall','Lingaiah','Kalluru road',2.8,4.4,'620','2.2k',2006,1,750,'goat,sheep','market-3'],
+ ['Korutla','Kanaka Durga Meat Point','Gangadhar','Old town',1.9,4.6,'990','3.8k',2015,1,790,'goat','keema-3'],
+ ['Korutla','Sai Ram Fresh Mutton','Sai Kiran','Vemulawada road',3.3,4.3,'410','1.5k',2019,1,760,'sheep','shop-11'],
+ ['Korutla','Annapurna Mutton','Lakshmi','Ambedkar chowk',1.4,4.8,'1.3k','5.0k',2013,1,800,'goat','chops-2'],
+ ['Metpally','Mahathi Mutton Mart','Shankar','Armoor road',0.8,4.8,'2.6k','10.4k',2014,1,790,'goat,sheep','shop-03'],
+ ['Metpally','Hanuman Fresh Mutton','Srinivas','Bus stand road',1.1,4.4,'720','2.7k',2015,1,750,'sheep','shop-10'],
+ ['Metpally','Lakshmi Goat Mutton','Mallesh','Main market',1.9,4.7,'1.6k','6.0k',2004,1,780,'goat','shop-09'],
+ ['Metpally','Durga Mutton Shop','Yadagiri','Korutla road',2.8,4.3,'390','1.4k',2018,0,740,'goat,sheep','market-1','','',"5:30 AM"],
+ ['Metpally','Ganesh Mutton Center','Ganesh','Weekly market',1.5,4.5,'880','3.3k',2010,1,770,'goat','liver-1'],
+ ['Metpally','Sri Sai Meat House','Praveen','Gandhi chowk',2.2,4.6,'1.0k','3.9k',2016,1,790,'goat','shop-12'],
+ ['Metpally','Yellamma Mutton Stall','Komuraiah','Mallapur road',3.6,4.2,'300','1.1k',2003,1,740,'goat,sheep','paya-2'],
+ ['Metpally','Rajanna Fresh Cuts','Rajanna','Station road',2.5,4.5,'560','2.0k',2017,1,760,'goat','keema-2'],
+ ['Jagtial','Renuka Fresh Mutton','Venkatesh','Old bus stand',1.2,4.9,'640','2.4k',2020,1,800,'goat','shop-02'],
+ ['Jagtial','Balaji Mutton & Boti','Anjaiah','Market road',2.1,4.6,'2.0k','7.7k',2001,1,790,'goat','market-2'],
+ ['Jagtial','Mallanna Mutton Stall','Pochaiah','Karimnagar road',3.4,4.5,'730','2.6k',2010,1,780,'goat,sheep','head-1','head'],
+ ['Jagtial','Maruthi Mutton Shop','Mahender','Tower circle',1.0,4.7,'1.4k','5.6k',2008,1,810,'goat','shop-07'],
+ ['Jagtial','Sri Krishna Meat Mart','Krishna','New bus stand',1.7,4.4,'520','1.9k',2018,0,790,'goat','market-4','','',"6 AM"],
+ ['Jagtial','Pochamma Mutton Centre','Sammaiah','Dharmapuri road',2.9,4.5,'810','3.1k',2005,1,770,'goat,sheep','boneless-1'],
+ ['Jagtial','Vijaya Fresh Mutton','Vijay','Collectorate road',2.4,4.6,'950','3.5k',2014,1,800,'goat','curry-2'],
+ ['Jagtial','Siddhi Vinayaka Mutton','Naresh','Nizamabad road',3.8,4.3,'280','980',2021,1,770,'goat','kidney-1']
+];
+const ABOUT=['Fresh goat every morning from the local santha. Curry cut and keema ready by 6 AM.','My father opened this counter. Goats from village farms, cut in front of you.','Third-generation butcher, fresh cut every morning at 5 AM.','Clean counter, sharp knives, honest weight. Scale photo with every order.','Goat and sheep both daily. Head and paya cleaned in the shop.','Keema ground fresh after you order, never kept ready.','Small shop, big care. Every piece washed twice before packing.','Regular customers get their cut ready before they arrive.'];
+const SHOPS=RAW.map((r,i)=>({n:i,id:'AK-JGT-'+String(12+i*7).padStart(4,'0'),town:r[0],name:r[1],owner:r[2],area:r[3],km:r[4],rating:r[5],ratings:r[6],orders:r[7],since:r[8],open:!!r[9],price:r[10],type:r[11].split(','),cover:r[12],hide:(r[13]||'').split(',').filter(Boolean),out:[['brain'],[],['kidney'],['head'],['boti'],[],['brain','kidney'],[]][i%8],opens:r[15]||'',
+  photo:IMG('owner-'+String(i+1).padStart(2,'0')),deal:DEALS[i%DEALS.length],about:ABOUT[i%ABOUT.length],fssai:'1362'+String(1048217+i*7919).padStart(10,'0')}));
+SHOPS[0].id='AK-JGT-0031';SHOPS[8].id='AK-JGT-0034';
+const POOL=['shop-01','shop-02','shop-03','shop-04','shop-07','shop-08','shop-09','shop-10','shop-11','shop-12','market-1','market-2','market-3','market-4'];
+const priceFor=(s,p)=>p.addon?p.price:p.per?Math.round(p.per*s.price/780/10)*10:s.price+p.d;
+const imgFor=(s,p)=>IMG(p.imgs[s.n%p.imgs.length]);
+const productsFor=s=>PRODUCTS.filter(p=>!s.hide.includes(p.k));
+const isOut=(s,p)=>s.out.includes(p.k)||(!s.open&&false);
+const eta=s=>s.km<=1.5?'25–30 mins':s.km<=2.5?'30–35 mins':'35–45 mins';
+const etaMin=s=>s.km<=1.5?25:s.km<=2.5?30:38;
+const unitTxt=(s,p)=>p.addon?`${inr(p.price)} <small>/ ${p.unit}</small>`:p.per?`${inr(priceFor(s,p))} <small>/ ${p.unit}</small>`:`${inr(priceFor(s,p)/2)} <small>/ 500 g</small>`;
+const shopById=id=>SHOPS.find(s=>s.id===id);
+const kycTick='<span class="tick" title="KYC verified"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><path d="m5 12 5 5 9-10"/></svg></span>';
+const star='<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8z"/></svg>';
+const heart='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20s-7-4.4-9-9.3C1.7 7.3 4 4 7.3 4c2 0 3.5 1.1 4.7 2.7C13.2 5.1 14.7 4 16.7 4 20 4 22.3 7.3 21 10.7 19 15.6 12 20 12 20z"/></svg>';
+
+/* ================= STATE ================= */
+let town=store.get('ak_town','Korutla'); if(!TOWNS[town])town='Korutla';
+let follows=store.get('ak_follows2',['AK-JGT-0031']).filter(shopById);
+let cart=store.get('ak_cart2',{shop:null,items:[]}); if(cart.shop&&!shopById(cart.shop))cart={shop:null,items:[]};
+let recent=store.get('ak_recent',['keema','Varun']);
+let order=store.get('ak_order',null);
+let filt=new Set(), cutFilter=null, query='', tab='all', coupon=true, tip=20, slot=0;
+const saveCart=()=>store.set('ak_cart2',cart);
+
+/* ================= SMALL PARTS ================= */
+function addCtl(s,p){
+  if(isOut(s,p)) return `<button class="addbtn" type="button" disabled>SOLD OUT</button>`;
+  const q=cart.shop===s.id?cart.items.filter(i=>i.k===p.k).reduce((a,i)=>a+i.qty,0):0;
+  if(q) return `<span class="stepper"><button type="button" data-dec="${s.id}|${p.k}" aria-label="Remove one">−</button><span class="num">${q}</span><button type="button" data-inc="${s.id}|${p.k}" aria-label="Add one more">+</button></span>`;
+  return `<button class="addbtn" type="button" data-add="${s.id}|${p.k}">ADD</button>`;
+}
+function pcard(s,p,showShop){
+  const v=priceFor(s,p);const strike=!p.addon&&(s.n+p.k.length)%3===0;
+  return `<div class="pcard"><div class="pi"><img src="${imgFor(s,p)}" alt="${p.name}" loading="lazy">${addCtl(s,p)}</div>
+   <div class="pt">${hl(p.name)}</div><div class="pw">${p.addon?p.desc:p.per?'1 '+p.unit:'500 g · '+p.short}</div>
+   <div class="pp num">${p.addon||p.per?inr(v):inr(v/2)}${strike?`<s>${inr((p.per?v:v/2)*1.08)}</s>`:''}</div>
+   ${showShop?`<div class="by"><img class="ava" src="${s.photo}" alt=""><span>${s.owner} · ${s.name}</span></div>`:''}</div>`;
+}
+function scard(s){
+  const fav=follows.includes(s.id);
+  const cuts=MEATS.filter(p=>!s.hide.includes(p.k)).slice(0,4).map(p=>p.short).join(', ');
+  return `<a class="scard${s.open?'':' closed'}" href="#shop-${s.id.toLowerCase()}" aria-label="${s.name}, owner ${s.owner}">
+   <div class="cov"><img class="c" src="${IMG(s.cover)}" alt="" loading="lazy">${s.deal?`<span class="deal">${s.deal}</span>`:''}
+     <img class="owner ava" src="${s.photo}" alt="Owner ${s.owner}" loading="lazy">
+     <button class="fav" type="button" data-fav="${s.id}" aria-pressed="${fav}" aria-label="${fav?'Unfollow':'Follow'} ${s.name}">${heart}</button>
+     ${s.open?'':`<span class="closed-tag">Opens ${s.opens}</span>`}</div>
+   <div class="info"><h3>${s.name}</h3>
+     <div class="meta"><span class="rating">${star}${s.rating}</span><span class="dot-sep"></span><span>${eta(s)}</span></div>
+     <div class="sub">${cuts}</div>
+     <div class="sub">${s.area}, ${s.town} · ${s.km} km</div>
+     <div class="who">${kycTick}<span>${s.owner} · since ${s.since} · ${inr(s.price)}/kg</span></div></div></a>`;
+}
+function hl(t){if(!query.trim())return esc(t);const q=query.trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return esc(t).replace(new RegExp('('+q+')','ig'),'<mark>$1</mark>')}
+
+/* ================= HOME ================= */
+function viewHome(){
+  const here=SHOPS.filter(s=>s.town===town);
+  const reg=shopById(follows[0]);
+  const picks=[[0,'curry'],[1,'keema'],[2,'liver'],[3,'paya'],[4,'chops'],[5,'boneless'],[6,'kidney'],[7,'boti']].map(([i,k])=>[here[i%here.length],PRODUCTS.find(p=>p.k===k)]).filter(([s,p])=>!s.hide.includes(p.k));
+  let list=here.slice();
+  if(filt.has('open'))list=list.filter(s=>s.open);
+  if(filt.has('r45'))list=list.filter(s=>s.rating>=4.5);
+  if(filt.has('goat'))list=list.filter(s=>s.type.includes('goat'));
+  if(filt.has('sheep'))list=list.filter(s=>s.type.includes('sheep'));
+  if(filt.has('deal'))list=list.filter(s=>s.deal);
+  if(filt.has('cheap'))list=list.filter(s=>s.price<=770);
+  if(filt.has('near'))list.sort((a,b)=>a.km-b.km);
+  if(filt.has('top'))list.sort((a,b)=>b.rating-a.rating);
+  if(cutFilter){const p=PRODUCTS.find(x=>x.k===cutFilter);list=list.filter(s=>!s.hide.includes(p.k));list.sort((a,b)=>priceFor(a,p)-priceFor(b,p))}
+  const cp=cutFilter&&PRODUCTS.find(x=>x.k===cutFilter);
+  V.innerHTML=`
+  <div class="wrap">
+    <section class="sec"><div class="scroller">
+      <a class="offer" href="#shop-ak-jgt-0031"><img src="${IMG('banner-biryani-1')}" alt=""><div><small>Sunday special</small><h3>Biryani cut, booked on Saturday</h3><p>Pre-order now for the 6–8 AM slot. Cut fresh at dawn.</p><span class="cta">Pre-order</span></div></a>
+      <button class="offer" type="button" data-toast="Code AREKATIKE75 is applied in your cart automatically."><img src="${IMG('banner-nalli')}" alt=""><div><small>New here?</small><h3>₹75 off your first order</h3><p>Use code AREKATIKE75 on orders above ₹499.</p><span class="cta">Code: AREKATIKE75</span></div></button>
+      <a class="offer" href="#search" data-q="paya"><img src="${IMG('banner-keema')}" alt=""><div><small>Fresh today</small><h3>Paya, boti and keema</h3><p>Roasted, cleaned and ready to cook.</p><span class="cta">Shop now</span></div></a>
+      <div class="offer brandcard"><img src="logo-640.jpg" alt=""><div><small>Are Katike</small><h3>Buy from the butcher you know</h3><p>Every owner's face is KYC verified.</p></div></div>
+    </div></section>
+
+    ${reg?`<section class="sec"><div class="regular"><img class="ava" src="${reg.photo}" alt="${reg.owner}"><div class="t"><small>♥ YOUR SHOP</small><h3>${reg.name}</h3><p>Last order: 1 kg curry cut · 500 g keema · ${inr(1290)}</p></div><button class="btn btn-brand" type="button" id="reorder">Order again</button></div></section>`:''}
+
+    <section class="sec"><div class="sec-h"><h2>What cut do you need today?</h2></div>
+      <div class="scroller">${MEATS.map(p=>`<button class="cutc" type="button" data-cut="${p.k}" aria-pressed="${cutFilter===p.k}"><img src="${IMG(p.imgs[p.imgs.length-1])}" alt="" loading="lazy"><span>${p.short}</span></button>`).join('')}
+      <button class="cutc" type="button" data-go-search="masala"><img src="${IMG('addon-spices')}" alt="" loading="lazy"><span>Masalas</span></button></div></section>
+
+    <section class="sec"><div class="sec-h"><div><h2>Butchers near you in ${town}</h2><p>Real owners, verified with Aadhaar KYC</p></div></div>
+      <div class="scroller">${here.slice().sort((a,b)=>a.km-b.km).map(s=>`<a class="face" href="#shop-${s.id.toLowerCase()}"><span class="ring"><img class="ava" src="${s.photo}" alt="${s.owner}" loading="lazy">${kycTick}</span><b>${s.owner}</b><span>${s.name}</span><span class="rating">${star}${s.rating}</span></a>`).join('')}</div></section>
+
+    <section class="sec"><div class="sec-h"><div><h2>Fresh picks today</h2><p>Cut this morning, priced per 500 g</p></div></div>
+      <div class="scroller">${picks.map(([s,p])=>pcard(s,p,true)).join('')}</div></section>
+  </div>
+  <div class="divider"></div>
+  <div class="wrap">
+    <section class="sec" id="allShops"><div class="sec-h"><div><h2>${list.length} shops delivering to you</h2><p>${cp?`Sorted by today's ${cp.short.toLowerCase()} price`:`In ${town} · fresh cut after you order`}</p></div>${cutFilter?'<button class="more" type="button" id="clearCut">Clear</button>':''}</div>
+      <div class="chips sticky-chips" role="group" aria-label="Filters">${[['near','Nearest'],['top','Rating 4.5+ first'],['open','Open now'],['r45','Ratings 4.5+'],['deal','Offers'],['goat','Goat'],['sheep','Sheep'],['cheap','Less than ₹770/kg']].map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${filt.has(k)}">${l}</button>`).join('')}</div>
+      <div class="shops">${list.length?list.map(scard).join(''):'<div class="empty"><b>No shops match these filters</b>Try removing a filter.</div>'}</div>
+    </section>
+    <section class="sec"><div class="trust">
+      <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg><span><b>Real owner photo</b><span>A live selfie, matched to Aadhaar by our team.</span></span></div>
+      <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span><b>KYC and FSSAI checked</b><span>Before any shop goes live.</span></span></div>
+      <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v13H3zM3 7l3-4h12l3 4"/></svg><span><b>Cut after you order</b><span>Packed in sealed bags with a weight slip.</span></span></div>
+      <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span><b>Verified reviews only</b><span>Only real customers can rate.</span></span></div>
+    </div>
+    <div class="community"><img src="logo-640.jpg" alt="Are Katike emblem"><div><small>BUILT BY KATIKE FAMILIES</small><h3>The courage of the lion. The honesty of the khadga.</h3><p>Are Katike carries the pride of the Katike community, who have cut fresh mutton for generations. Every honest butcher who passes KYC and FSSAI checks is welcome.</p></div><button class="btn btn-gold" type="button" data-toast="Shop registration opens on partner.arekatike.in">Sell on Are Katike</button></div>
+    </section>
+  </div>`;
+  const ro=$('#reorder'); if(ro) ro.onclick=()=>{cart={shop:reg.id,items:[]};pushItem(reg,PRODUCTS[0],1000,'Small pieces · Less fat','');pushItem(reg,PRODUCTS[2],500,'Ground twice','');saveCart();location.hash='cart'};
+  const cc=$('#clearCut'); if(cc) cc.onclick=()=>{cutFilter=null;viewHome()};
+}
+
+/* ================= SEARCH ================= */
+const SUG=['curry cut','keema','paya','liver','boti','Varun','Mahathi','boneless','chops','brain'];
+function matchProd(p,q){q=q.toLowerCase();return (p.name+' '+p.short+' '+p.syn+' '+p.k).toLowerCase().includes(q)}
+function matchShop(s,q){q=q.toLowerCase();return (s.name+' '+s.owner+' '+s.area+' '+s.id+' '+s.town).toLowerCase().includes(q)}
+function viewSearch(){
+  const q=query.trim();
+  if(!q){
+    V.innerHTML=`<div class="wrap">
+      ${recent.length?`<section class="sec"><div class="sec-h"><h2>Recent searches</h2><button class="more" type="button" id="clrRecent">Clear</button></div><div class="recent">${recent.map(r=>`<button class="chip" type="button" data-q="${esc(r)}">↺ ${esc(r)}</button>`).join('')}</div></section>`:''}
+      <section class="sec"><div class="sec-h"><h2>Popular cuts</h2></div><div class="popular">${MEATS.map(p=>`<button class="pop" type="button" data-q="${p.short}"><img src="${IMG(p.imgs[0])}" alt="" loading="lazy"><b>${p.short}</b></button>`).join('')}</div></section>
+      <section class="sec"><div class="sec-h"><h2>Butchers in ${town}</h2></div><div class="scroller">${SHOPS.filter(s=>s.town===town).map(s=>`<a class="face" href="#shop-${s.id.toLowerCase()}"><span class="ring"><img class="ava" src="${s.photo}" alt="${s.owner}" loading="lazy">${kycTick}</span><b>${s.owner}</b><span>${s.name}</span></a>`).join('')}</div></section></div>`;
+    const c=$('#clrRecent'); if(c) c.onclick=()=>{recent=[];store.set('ak_recent',recent);viewSearch()};
+    return;
+  }
+  const searchTown=t=>SHOPS.filter(s=>s.town===t).map(s=>{const byShop=matchShop(s,q);const prods=productsFor(s).filter(p=>matchProd(p,q));return {s,byShop,prods}}).filter(r=>r.byShop||r.prods.length);
+  let res=searchTown(town);let movedFrom=null;
+  if(!res.length){for(const t of Object.keys(TOWNS)){if(t===town)continue;const r=searchTown(t);if(r.length){movedFrom=t;res=r;break}}}
+  res.sort((a,b)=>(b.byShop-a.byShop)||(a.s.km-b.s.km));
+  const prodCount=res.reduce((a,r)=>a+r.prods.length,0), shopCount=res.filter(r=>r.byShop).length;
+  let shown=res; if(tab==='shops')shown=res.filter(r=>r.byShop); if(tab==='cuts')shown=res.filter(r=>r.prods.length);
+  V.innerHTML=`<div class="wrap"><section class="sec">
+    ${movedFrom?`<p class="res-note" style="margin-bottom:12px">No match in ${town}. Showing results from <b>${movedFrom}</b>.</p>`:''}
+    <div class="tabs" role="tablist"><button role="tab" type="button" data-tab="all" aria-selected="${tab==='all'}">All</button><button role="tab" type="button" data-tab="shops" aria-selected="${tab==='shops'}">Shops (${shopCount})</button><button role="tab" type="button" data-tab="cuts" aria-selected="${tab==='cuts'}">Cuts (${prodCount})</button></div>
+    ${shown.length?shown.map(({s,byShop,prods})=>{const list=prods.length?prods:productsFor(s).filter(p=>!p.addon).slice(0,5);
+      return `<div class="res"><a class="res-h" href="#shop-${s.id.toLowerCase()}"><img class="ava" src="${s.photo}" alt="Owner ${s.owner}"><div class="t"><h3><span class="n">${hl(s.name)}</span>${kycTick}</h3><p><span class="rating">${star}${s.rating}</span><span class="dot-sep"></span>${eta(s)}<span class="dot-sep"></span>${s.km} km<span class="dot-sep"></span>Owner ${hl(s.owner)}</p>${s.open?'':`<p style="color:var(--amber)">Closed now · opens ${s.opens}. You can pre-order.</p>`}</div><span class="go">View shop ›</span></a>
+        ${prods.length?'':`<p class="res-note">Popular at this shop</p>`}
+        <div class="scroller">${list.map(p=>pcard(s,p,false)).join('')}</div></div>`}).join(''):`<div class="empty"><b>No results for "${esc(q)}"</b>Try "curry cut", "keema", or a shop name like Varun.</div>`}
+  </section></div>`;
+}
+
+/* ================= SHOP ================= */
+const REVIEWS=[['Kiran R.','Same taste as buying at the counter. Pieces cut exactly how I asked.',5,'2 days ago'],['Sravani','Keema was fresh and the weight was correct. Rider came on time.',5,'4 days ago'],['Mahesh G.','Good quality. Sunday 7 AM slot fills fast, book on Saturday.',4,'1 week ago'],['Rajitha','Liver and boti very clean. Packed well, no smell.',5,'1 week ago'],['Naveen','Ordered 5 kg curry cut for a function, came on time.',5,'2 weeks ago'],['Swathi K.','Slightly more fat than I wanted. Will add a note next time.',4,'3 weeks ago']];
+const RCOL=['#8E1B2C','#1B6E8A','#7A5A12','#2E5E3E','#5B2A6E','#A0522D'];
+let menuQ='';
+function viewShop(id){
+  const s=shopById(id);if(!s){location.hash='';return}
+  const fav=follows.includes(s.id);
+  const list=productsFor(s).filter(p=>!menuQ||matchProd(p,menuQ));
+  const cats=[...new Set(list.map(p=>p.cat))];
+  const gal=[IMG(s.cover),...POOL.filter(x=>x!==s.cover).filter((x,i)=>i%5===s.n%5).slice(0,2).map(IMG),imgFor(s,PRODUCTS[2])];
+  V.innerHTML=`<div class="wrap">
+   <div class="sp-top"><button type="button" id="back">‹ Back</button><button type="button" data-fav="${s.id}" aria-pressed="${fav}" style="color:var(--brand)">${fav?'♥ Your shop':'♡ Make this my shop'}</button></div>
+   <div class="sp-card">
+     <div style="min-width:0"><h1>${s.name}</h1>
+       <div class="meta"><span class="rating">${star}${s.rating}</span>&nbsp;(${s.ratings} ratings)<span class="dot-sep"></span>${inr(s.price)}/kg<span class="dot-sep"></span>${s.orders} orders</div>
+       <div class="line"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Outlet <b>${s.area}, ${s.town}</b> · ${s.km} km</span></div>
+       <div class="line"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>${eta(s)}</b> · ${s.open?'Open now · 5 AM–1 PM, 5–9 PM':'Closed · opens '+s.opens+' (pre-order open)'}</span></div>
+       <div class="line">${kycTick}<span>KYC verified · Shop ID <b>${s.id}</b> · since ${s.since}</span></div>
+     </div>
+     <div class="sp-owner"><img class="ava" src="${s.photo}" alt="Owner ${s.owner}"><b>${s.owner}</b><span>${kycTick} Owner</span></div>
+     <div class="quote">"${s.about}" — <b>${s.owner}</b></div>
+   </div>
+   <section class="sec"><div class="scroller deals">
+     ${[s.deal||'FREE DELIVERY','₹75 OFF FIRST ORDER','FREE CLEANING & WASHING'].map((d,i)=>`<div class="deal"><i>%</i><div><b>${d}</b><span>${['On this shop today','Code AREKATIKE75','On every order'][i]}</span></div></div>`).join('')}
+   </div></section>
+   <section class="sec"><div class="scroller gal">${gal.map((g,i)=>`<img src="${g}" alt="${['Shop front','Counter','Cutting area','Fresh stock'][i]}" loading="lazy">`).join('')}</div></section>
+   <p class="menu-h">— MENU —</p>
+   <label class="msearch" for="mq"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="mq" type="search" placeholder="Search in ${esc(s.name)}" value="${esc(menuQ)}" autocomplete="off"></label>
+   <div class="chips" style="margin-top:12px">${cats.map(c=>`<button class="chip" type="button" data-jump="${c}">${c}</button>`).join('')}</div>
+   ${cats.length?cats.map(cat=>`<div class="cat" id="cat-${cat.replace(/\W+/g,'-')}"><h2>${cat} (${list.filter(p=>p.cat===cat).length})</h2>
+     ${list.filter(p=>p.cat===cat).map(p=>{const o=isOut(s,p);return `<div class="item${o?' oos':''}"><div style="min-width:0">${p.tag&&!o?`<span class="tag">★ ${p.tag}</span>`:''}<h3>${p.name}</h3><p class="pr num">${unitTxt(s,p)}${!p.addon&&!p.per?` · <small>${inr(priceFor(s,p))}/kg</small>`:''}</p><p class="ds">${p.desc}</p>${!p.addon&&!p.per?`<div class="wt"><span>250 g</span><span>500 g</span><span>1 kg</span><span>2 kg</span></div>`:''}</div>
+       <div><div class="im"><img src="${imgFor(s,p)}" alt="${p.name}" loading="lazy">${addCtl(s,p)}</div>${!p.addon&&!o?'<p class="cust">Customisable</p>':''}</div></div>`}).join('')}</div>`).join(''):`<div class="empty" style="margin-top:14px"><b>Nothing called "${esc(menuQ)}" here</b>Try another cut.</div>`}
+   <section class="sec"><div class="sec-h"><h2>Ratings & reviews</h2><span class="rating">${star}${s.rating}</span></div>
+     <div class="scroller reviews">${[0,1,2,3].map(i=>{const r=REVIEWS[(s.n+i)%REVIEWS.length];return `<div class="rv"><div class="who"><span class="ini" style="background:${RCOL[(s.n+i)%RCOL.length]}">${r[0][0]}</span><div><b>${r[0]}</b><br><small>${'★'.repeat(r[2])}${'☆'.repeat(5-r[2])} · ${r[3]} · Verified order</small></div></div><p>${r[1]}</p></div>`}).join('')}</div></section>
+   <div class="legal"><b>${s.name}</b><span>Owner: ${s.owner} · ${s.area}, ${s.town}, Jagtial district, Telangana</span><span>FSSAI Lic. No. ${s.fssai} · Shop ID ${s.id}</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.town+', Jagtial, Telangana')}" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600">Get directions ›</a></div>
+  </div>`;
+  $('#back').onclick=()=>history.length>1?history.back():(location.hash='');
+  const mq=$('#mq');mq.oninput=()=>{menuQ=mq.value;const pos=mq.selectionStart;viewShop(id);const n=$('#mq');n.focus();n.setSelectionRange(pos,pos)};
+  V.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>document.getElementById('cat-'+b.dataset.jump.replace(/\W+/g,'-')).scrollIntoView({behavior:'smooth',block:'start'}));
+}
+
+/* ================= PRODUCT SHEET ================= */
+function openProduct(s,p){
+  if(p.addon){addItem(s,p,1,'','');return}
+  const price=priceFor(s,p);
+  let w=p.per?1:500,size='Medium',fat='Less fat',extra=new Set();
+  const weights=p.per?[[1,'1 '+p.unit],[2,'2 '+p.unit+'s'],[3,'3 '+p.unit+'s']]:[[250,'250 g'],[500,'500 g'],[1000,'1 kg'],[1500,'1.5 kg'],[2000,'2 kg']];
+  const total=()=>p.per?price*w:price*w/1000;
+  const cuttable=['curry','boneless','chops'].includes(p.k);
+  layer(`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pT">
+    <img class="simg" src="${imgFor(s,p)}" alt="${p.name}">
+    <h2 id="pT">${p.name}</h2><p class="sub">${s.name} · cut by ${s.owner} · ${inr(price)}${p.per?' / '+p.unit:' / kg'}</p>
+    <div class="opt"><b>${p.per?'Quantity':'Weight'}</b><div class="seg" data-g="w">${weights.map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${v===w}">${l}</button>`).join('')}</div></div>
+    ${cuttable?`<div class="opt"><b>Piece size</b><div class="seg" data-g="size">${['Small','Medium','Large'].map(v=>`<button type="button" data-v="${v}" aria-pressed="${v===size}">${v}</button>`).join('')}</div></div>
+    <div class="opt"><b>Fat</b><div class="seg" data-g="fat">${['With fat','Less fat'].map(v=>`<button type="button" data-v="${v}" aria-pressed="${v===fat}">${v}</button>`).join('')}</div></div>`:''}
+    <div class="opt"><b>Extras (free)</b><div class="seg" data-g="extra">${['Wash & clean',...(cuttable?['Add bones','Cut for biryani']:[])].map(v=>`<button type="button" data-v="${v}" aria-pressed="false">${v}</button>`).join('')}</div></div>
+    <div class="opt"><b><label for="pNote">Note to ${s.owner}</label></b><textarea id="pNote" placeholder="e.g. remove extra fat, cut small"></textarea></div>
+    <div class="sheet-foot"><button class="btn btn-line" type="button" data-close>Cancel</button><button class="btn btn-brand" type="button" id="pAdd">Add item · <span id="pTot" class="num">${inr(total())}</span></button></div></div>`);
+  $('#layer .sheet').querySelectorAll('.seg').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=g.dataset.g,v=b.dataset.v;
+    if(k==='extra'){extra.has(v)?extra.delete(v):extra.add(v);b.setAttribute('aria-pressed',extra.has(v));return}
+    g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    if(k==='w')w=+v;if(k==='size')size=v;if(k==='fat')fat=v;$('#pTot').textContent=inr(total())}));
+  $('#pAdd').onclick=()=>addItem(s,p,w,(cuttable?[size+' pieces',fat,...extra]:[...extra]).join(' · ')||'Cleaned',$('#pNote').value.trim());
+}
+
+/* ================= CART LOGIC ================= */
+function pushItem(s,p,w,opts,note){
+  const price=priceFor(s,p);const unit=p.addon?price:p.per?price*w:price*w/1000;
+  const same=cart.items.find(i=>i.k===p.k&&i.w===w&&i.opts===opts&&i.note===note);
+  if(same)same.qty++;else cart.items.push({k:p.k,name:p.name,img:imgFor(s,p),w,opts,note,unit,per:p.addon?p.unit:p.per?p.unit:null,addon:!!p.addon,qty:1});
+}
+function addItem(s,p,w,opts,note){
+  if(cart.shop&&cart.shop!==s.id&&cart.items.length){
+    const cur=shopById(cart.shop);
+    layer(`<div class="sheet" role="dialog" aria-modal="true"><h2>Replace cart item?</h2><p class="sub" style="margin-top:8px">Your cart has items from <b>${cur.name}</b>. Do you want to clear it and add items from <b>${s.name}</b>?</p>
+      <div class="sheet-foot"><button class="btn btn-line" type="button" data-close>No</button><button class="btn btn-brand" type="button" id="repl">Yes, replace</button></div></div>`);
+    $('#repl').onclick=()=>{cart={shop:null,items:[]};addItem(s,p,w,opts,note)};return}
+  cart.shop=s.id;pushItem(s,p,w,opts,note);saveCart();closeLayer();refresh();toast(`${p.short} added to cart`);
+}
+function changeQty(sid,k,d){
+  const s=shopById(sid);const p=PRODUCTS.find(x=>x.k===k);
+  if(d>0){if(p.addon){addItem(s,p,1,'','');return}const last=[...cart.items].reverse().find(i=>i.k===k);if(last){last.qty++;saveCart();refresh()}else openProduct(s,p);return}
+  const idx=cart.items.map(i=>i.k).lastIndexOf(k);if(idx<0)return;
+  cart.items[idx].qty--;if(cart.items[idx].qty<1)cart.items.splice(idx,1);if(!cart.items.length)cart.shop=null;saveCart();refresh();
+}
+function totals(){
+  const s=shopById(cart.shop);const items=cart.items.reduce((a,i)=>a+i.unit*i.qty,0);
+  const del=!s?0:(s.deal==='FREE DELIVERY'||items>=999)?0:(s.km<=3?20:30);
+  const plat=items?5:0;const disc=coupon&&items>=499?75:0;
+  return {s,items,del,plat,disc,tip:items?tip:0,total:items?items+del+plat-disc+tip:0,count:cart.items.reduce((a,i)=>a+i.qty,0)};
+}
+const wLabel=i=>i.per?`${i.w} ${i.per}${i.w>1?'s':''}`:(i.w>=1000?i.w/1000+' kg':i.w+' g');
+
+/* ================= CART VIEW ================= */
+function viewCart(){
+  const t=totals();
+  if(!t.count){V.innerHTML=`<div class="wrap"><div class="empty" style="margin-top:30px"><b>Your cart is empty</b>Pick a butcher and add a cut to get started.<br><br><a class="btn btn-brand" href="#">Browse shops</a></div></div>`;return}
+  const s=t.s;
+  V.innerHTML=`<div class="wrap"><div class="cart-grid"><div>
+    <div class="box"><div class="cshop"><img class="ava" src="${s.photo}" alt="${s.owner}"><div><b>${s.name}</b><p>${s.owner} will cut your order · ${s.area}, ${s.town} · ${eta(s)}</p></div></div></div>
+    <div class="box"><h3>Items</h3>${cart.items.map((i,n)=>`<div class="cline"><img src="${i.img}" alt=""><div style="min-width:0"><b>${i.name}</b><small>${i.addon?'':wLabel(i)+' · '}${esc(i.opts)}${i.note?' · "'+esc(i.note)+'"':''}</small></div>
+      <span class="stepper"><button type="button" data-cq="${n}|-1" aria-label="Less">−</button><span class="num">${i.qty}</span><button type="button" data-cq="${n}|1" aria-label="More">+</button></span><span class="amt num">${inr(i.unit*i.qty)}</span></div>`).join('')}
+      <a class="more" href="#shop-${s.id.toLowerCase()}" style="display:inline-block;margin-top:10px">+ Add more items</a></div>
+    <div class="box"><h3>Complete your mutton dish</h3><div class="scroller">${ADDONS.map(p=>pcard(s,p,false)).join('')}</div></div>
+    <div class="box"><h3>Delivery time</h3><div class="seg" id="slotSeg">${[`Now · ${eta(s)}`,'Sun 6–7 AM','Sun 7–8 AM','Sun 8–9 AM'].map((v,n)=>`<button type="button" data-slot="${n}" aria-pressed="${n===slot}">${v}</button>`).join('')}</div></div>
+    <div class="box"><h3>Tip your delivery partner</h3><p class="sub" style="font-size:13px;color:var(--muted);margin-bottom:10px">100% of the tip goes to your rider.</p><div class="seg" id="tipSeg">${[0,10,20,30].map(v=>`<button type="button" data-tip="${v}" aria-pressed="${v===tip}">${v?'₹'+v:'No tip'}</button>`).join('')}</div></div>
+  </div><div class="pay">
+    <div class="box"><div class="coupon"><div><b>${coupon?'AREKATIKE75 applied':'Apply coupon'}</b><p style="font-size:13px;color:var(--muted)">${t.items>=499?'Save ₹75 on this order':'Add '+inr(499-t.items)+' more to use AREKATIKE75'}</p></div><button class="more" type="button" id="cpBtn">${coupon?'Remove':'Apply'}</button></div></div>
+    <div class="box"><h3>Bill details</h3><div class="bill num">
+      <div><span>Item total</span><span>${inr(t.items)}</span></div>
+      <div><span>Delivery fee · ${s.km} km</span><span>${t.del?inr(t.del):'FREE'}</span></div>
+      <div><span>Platform fee</span><span>${inr(t.plat)}</span></div>
+      ${t.disc?`<div class="save"><span>Coupon discount</span><span>−${inr(t.disc)}</span></div>`:''}
+      ${t.tip?`<div><span>Rider tip</span><span>${inr(t.tip)}</span></div>`:''}
+      <div class="tot"><span>To pay</span><span>${inr(t.total)}</span></div></div></div>
+    <div class="box"><div class="addr"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg><div><b>Deliver to Home</b><p>H.No 4-2-118, ${TOWNS[town]}, Jagtial dist.</p></div></div>
+      <div class="seg" id="paySeg" style="margin-top:14px">${['UPI','Card','Cash on delivery'].map((v,n)=>`<button type="button" aria-pressed="${n===0}">${v}</button>`).join('')}</div>
+      <button class="btn btn-brand btn-block" type="button" id="placeBtn" style="margin-top:14px">Place order · ${inr(t.total)}</button>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center">Free cancellation until ${s.owner} starts cutting.</p></div>
+  </div></div></div>`;
+  V.querySelectorAll('[data-cq]').forEach(b=>b.onclick=()=>{const [n,d]=b.dataset.cq.split('|').map(Number);const i=cart.items[n];i.qty+=d;if(i.qty<1)cart.items.splice(n,1);if(!cart.items.length)cart.shop=null;saveCart();refresh()});
+  $('#slotSeg').onclick=e=>{const b=e.target.closest('[data-slot]');if(b){slot=+b.dataset.slot;viewCart()}};
+  $('#tipSeg').onclick=e=>{const b=e.target.closest('[data-tip]');if(b){tip=+b.dataset.tip;viewCart()}};
+  $('#paySeg').onclick=e=>{const b=e.target.closest('button');if(b)$('#paySeg').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b))};
+  $('#cpBtn').onclick=()=>{coupon=!coupon;viewCart()};
+  $('#placeBtn').onclick=()=>{
+    order={id:'AK'+(48210+Math.floor(Math.random()*780)),shop:s.id,items:cart.items.map(i=>`${i.addon?'':wLabel(i)+' '}${i.name}${i.qty>1?' ×'+i.qty:''}`),total:t.total,at:Date.now(),slot,otp:String(1000+Math.floor(Math.random()*8999))};
+    store.set('ak_order',order);cart={shop:null,items:[]};saveCart();location.hash='orders';toast('Order placed! '+s.owner+' has been notified.');
+  };
+}
+
+/* ================= ORDERS ================= */
+const STEPS=[['Order placed','We sent your order to the shop'],['Accepted','{o} accepted your order'],['Cutting & packing','{o} is cutting your mutton fresh'],['Picked up','Suresh picked up your order'],['Out for delivery','Suresh is on the way'],['Delivered','Enjoy your meal!']];
+function stepNow(){if(!order)return -1;if(order.slot)return 0;return Math.min(5,Math.floor((Date.now()-order.at)/9000))}
+function viewOrders(){
+  const past=[[SHOPS[1],'1 kg curry cut, 250 g liver',1065,'Sun, 8 Nov · 7:42 AM'],[SHOPS[8],'500 g keema, 1 set paya',705,'Sun, 1 Nov · 8:10 AM'],[SHOPS[0],'2 kg curry cut (biryani), Biryani spice kit',1735,'Sat, 24 Oct · 6:55 PM']];
+  let live='';
+  if(order){const s=shopById(order.shop);const st=stepNow();const left=Math.max(0,etaMin(s)-Math.floor((Date.now()-order.at)/60000));
+    live=`<section class="sec"><div class="sec-h"><h2>${st<5?'Live order':'Order delivered'}</h2><span class="res-note">#${order.id}</span></div>
+    <div class="track"><div class="track-top"><img class="ava" src="${s.photo}" alt="${s.owner}"><div><h2>${st<5?STEPS[Math.max(st,0)][1].replace('{o}',s.owner):'Delivered. Enjoy your meal!'}</h2><p>${s.name} · ${order.items.join(', ')}</p></div>${st<5&&!order.slot?`<div class="mins"><b class="num">${left||1}</b><span>mins</span></div>`:''}</div>
+    <div class="steps">${STEPS.map((x,i)=>`<div class="st ${i<st||st===5?'done':i===st?'now':''}"><i>${i<st||st===5?'✓':i+1}</i><div><b>${x[0]}</b><p>${x[1].replace('{o}',s.owner)}</p></div><small>${i<=st?new Date(order.at+i*9000*6).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}):''}</small></div>`).join('')}</div>
+    ${order.slot?`<div class="rider"><div class="t"><b>Scheduled for ${['','Sun 6–7 AM','Sun 7–8 AM','Sun 8–9 AM'][order.slot]}</b><p>${s.owner} will start cutting 30 minutes before your slot.</p></div></div>`:st>=3&&st<5?`<div class="rider"><img class="ava" src="img/rider-1.jpg" alt="Rider"><div class="t"><b>Suresh · delivery partner</b><p>TS 21 AB 4821 · ★ 4.9</p></div><span class="otp num">OTP ${order.otp}</span></div>`:''}
+    <div class="rider"><div class="t"><b>To pay: ${inr(order.total)}</b><p>Paid by UPI · Bill sent on WhatsApp</p></div>${st<2?'<button class="btn btn-line" type="button" id="cancelBtn">Cancel</button>':''}</div></div></section>`}
+  V.innerHTML=`<div class="wrap">${live||`<section class="sec"><div class="empty"><b>No active orders</b>Your live order will show here with the owner's photo and rider details.</div></section>`}
+   <section class="sec"><div class="sec-h"><h2>Past orders</h2></div><div class="past">${past.map(([s,it,amt,d])=>`<div class="porder"><div class="h"><img class="ava" src="${s.photo}" alt=""><div><b>${s.name}</b><small>${s.area}, ${s.town}</small></div><span class="delivered" style="margin-left:auto">Delivered ✓</span></div><p>${it}</p><div class="f"><span class="res-note">${d} · <b class="num" style="color:var(--ink)">${inr(amt)}</b></span><button class="btn btn-line" type="button" data-reorder="${s.id}">Reorder</button></div></div>`).join('')}</div></section></div>`;
+  const c=$('#cancelBtn');if(c)c.onclick=()=>{order=null;store.set('ak_order',null);toast('Order cancelled. Refund in 2–3 days.');viewOrders()};
+  V.querySelectorAll('[data-reorder]').forEach(b=>b.onclick=()=>{const s=shopById(b.dataset.reorder);cart={shop:s.id,items:[]};pushItem(s,PRODUCTS[0],1000,'Medium pieces · Less fat','');saveCart();location.hash='cart'});
+}
+
+/* ================= MY SHOPS / ACCOUNT ================= */
+function viewMyShops(){
+  const list=follows.map(shopById).filter(Boolean);
+  V.innerHTML=`<div class="wrap"><section class="sec"><div class="sec-h"><div><h2>My shops</h2><p>Shops you follow. The first one is pinned on Home.</p></div></div>
+   <div class="shops">${list.length?list.map(scard).join(''):'<div class="empty"><b>You don\'t follow any shop yet</b>Tap ♡ on a shop to make it yours.</div>'}</div></section>
+   <section class="sec"><div class="sec-h"><h2>Suggested for you</h2></div><div class="scroller">${SHOPS.filter(s=>s.town===town&&!follows.includes(s.id)).map(s=>`<a class="face" href="#shop-${s.id.toLowerCase()}"><span class="ring"><img class="ava" src="${s.photo}" alt="${s.owner}" loading="lazy">${kycTick}</span><b>${s.owner}</b><span>${s.name}</span></a>`).join('')}</div></section></div>`;
+}
+function viewAccount(){
+  V.innerHTML=`<div class="wrap"><div class="acc"><div><div class="prof"><b>Hello!</b><p>Browse and order without login. You'll verify your mobile number with OTP at checkout.</p></div></div>
+   <div class="menu-list">
+    <button type="button" data-go="orders">My orders <span>${order?'1 active':'3 past'} ›</span></button>
+    <button type="button" data-go="my-shops">My shops <span>${follows.length} followed ›</span></button>
+    <button type="button" id="accTown">Delivery town <span>${town} ›</span></button>
+    <button type="button" data-toast="Telugu, Kannada and Hindi are coming soon.">Language <span>English ›</span></button>
+    <button type="button" data-toast="WhatsApp support: +91 90000 12345 (sample)">Help & support <span>WhatsApp ›</span></button>
+    <button type="button" data-toast="Shop registration opens on partner.arekatike.in">Own a mutton shop? Sell with us <span>›</span></button>
+   </div></div></div>`;
+  $('#accTown').onclick=openTown;
+}
+
+/* ================= ROUTER ================= */
+let curRoute='';
+function route(){
+  const h=location.hash.slice(1);curRoute=h;
+  const sb=$('#searchbar');sb.hidden=!(h===''||h==='search');
+  document.querySelectorAll('[data-nav]').forEach(a=>{const n=a.dataset.nav;a.toggleAttribute('aria-current',(n==='home'&&h==='')||n===h);if(a.hasAttribute('aria-current'))a.setAttribute('aria-current','page')});
+  if(h==='search'){viewSearch();setTimeout(()=>$('#q').focus({preventScroll:true}),50)}
+  else if(h==='cart')viewCart();
+  else if(h==='orders')viewOrders();
+  else if(h==='my-shops')viewMyShops();
+  else if(h==='account')viewAccount();
+  else if(/^shop-ak-[a-z]{3}-\d{4}$/.test(h)){menuQ='';viewShop(h.slice(5).toUpperCase())}
+  else viewHome();
+  window.scrollTo(0,0);renderBar();
+}
+function refresh(){
+  const y=window.scrollY;const h=curRoute;
+  if(h==='search')viewSearch();else if(h==='cart')viewCart();else if(h==='orders')viewOrders();else if(h==='my-shops')viewMyShops();else if(h==='account')viewAccount();
+  else if(/^shop-/.test(h))viewShop(h.slice(5).toUpperCase());else viewHome();
+  window.scrollTo(0,y);renderBar();
+}
+function renderBar(){
+  const t=totals();document.querySelectorAll('[data-count]').forEach(c=>{c.hidden=!t.count;c.textContent=t.count});
+  const show=t.count&&curRoute!=='cart';$('#cartbar').hidden=!show;
+  if(show){$('#cbItems').textContent=`${t.count} item${t.count>1?'s':''} added · ${inr(t.items)}`;$('#cbShop').textContent='From '+t.s.name}
+}
+window.addEventListener('hashchange',route);
+
+/* ================= GLOBAL EVENTS ================= */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-fav],[data-add],[data-inc],[data-dec],[data-cut],[data-f],[data-q],[data-tab],[data-toast],[data-go],[data-go-search]');
+  if(!t)return;
+  if(t.dataset.fav){e.preventDefault();e.stopPropagation();const id=t.dataset.fav;const s=shopById(id);
+    if(follows.includes(id)){follows=follows.filter(x=>x!==id);toast('Removed '+s.name+' from My shops')}else{follows=[id,...follows];toast(s.name+' is now your shop ♥')}
+    store.set('ak_follows2',follows);refresh();return}
+  if(t.dataset.add){e.preventDefault();e.stopPropagation();const [sid,k]=t.dataset.add.split('|');openProduct(shopById(sid),PRODUCTS.find(p=>p.k===k));return}
+  if(t.dataset.inc){e.preventDefault();e.stopPropagation();const [sid,k]=t.dataset.inc.split('|');changeQty(sid,k,1);return}
+  if(t.dataset.dec){e.preventDefault();e.stopPropagation();const [sid,k]=t.dataset.dec.split('|');changeQty(sid,k,-1);return}
+  if(t.dataset.cut){cutFilter=cutFilter===t.dataset.cut?null:t.dataset.cut;viewHome();document.getElementById('allShops').scrollIntoView({behavior:'smooth'});return}
+  if(t.dataset.f){const f=t.dataset.f;filt.has(f)?filt.delete(f):filt.add(f);if(f==='near')filt.delete('top');if(f==='top')filt.delete('near');if(f==='goat')filt.delete('sheep');if(f==='sheep')filt.delete('goat');const y=scrollY;viewHome();scrollTo(0,y);return}
+  if(t.dataset.q!==undefined&&t.dataset.q){e.preventDefault();setQuery(t.dataset.q);if(curRoute!=='search')location.hash='search';else viewSearch();return}
+  if(t.dataset.goSearch){setQuery(t.dataset.goSearch);location.hash='search';return}
+  if(t.dataset.tab){tab=t.dataset.tab;viewSearch();return}
+  if(t.dataset.go){location.hash=t.dataset.go;return}
+  if(t.dataset.toast){toast(t.dataset.toast);return}
+});
+function setQuery(v){query=v;$('#q').value=v;$('#qClear').hidden=!v;tab='all';if(v&&!recent.includes(v)){recent=[v,...recent].slice(0,6);store.set('ak_recent',recent)}}
+$('#q').addEventListener('input',e=>{query=e.target.value;tab='all';$('#qClear').hidden=!query;if(curRoute!=='search')location.hash='search';else viewSearch()});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'&&query.trim())setQuery(query.trim())});
+$('#q').addEventListener('focus',()=>{if(curRoute!=='search')location.hash='search'});
+$('#qClear').onclick=()=>{setQuery('');viewSearch();$('#q').focus()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLayer()});
+$('#cartbarBtn').onclick=()=>location.hash='cart';
+function openTown(){
+  layer(`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tT"><h2 id="tT" style="margin-top:0">Choose delivery location</h2><p class="sub">We deliver in these towns of Jagtial district</p>
+   <div class="opt"><div class="seg" id="townSeg">${Object.keys(TOWNS).map(t=>`<button type="button" data-t="${t}" aria-pressed="${t===town}">${t} · ${SHOPS.filter(s=>s.town===t).length} shops</button>`).join('')}</div></div>
+   <p class="sub" style="margin-top:14px">Coming next: Dharmapuri, Raikal, Mallapur. </p></div>`);
+  $('#townSeg').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;town=b.dataset.t;store.set('ak_town',town);setTown();closeLayer();refresh();toast('Delivering to '+town)};
+}
+$('#locBtn').onclick=openTown;
+function setTown(){$('#addrTxt').textContent='Home · '+TOWNS[town];const near=Math.min(...SHOPS.filter(s=>s.town===town&&s.open).map(etaMin));$('#etaTxt').textContent='Delivery in '+(near+3)+' min'}
+
+/* rotating placeholder */
+const PH=['"curry cut"','"keema"','"Varun Mutton Shop"','"paya"','"liver"','"Mahathi"','"boti"'];let ph=0;
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(()=>{ph=(ph+1)%PH.length;$('#q').placeholder='Search '+PH[ph]},2600);
+/* live order progress */
+setInterval(()=>{if(order&&curRoute==='orders'){const st=stepNow();if(st!==order._st){order._st=st;viewOrders()}}},3000);
+
+/* credits */
+const CREDITS=[["shop-01", "Mutton Shop Nithiravilai Tamil Nadu Mar24 A7C 10096.jpg", "Timothy A. Gonsalves", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_Shop_Nithiravilai_Tamil_Nadu_Mar24_A7C_10096.jpg"], ["shop-02", "Mutton shop during COVID-19 second wave in India.jpg", "Ganesh Dhamodkar", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_shop_during_COVID-19_second_wave_in_India.jpg"], ["shop-03", "Butcher Shop - Sibpur - Howrah 2011-11-20 00840.jpg", "Biswarup Ganguly", "CC BY 3.0", "https://commons.wikimedia.org/wiki/File:Butcher_Shop_-_Sibpur_-_Howrah_2011-11-20_00840.jpg"], ["shop-04", "Meat shop (132234038).jpg", "tara hunt from Montreal, Canada", "CC BY-SA 2.0", "https://commons.wikimedia.org/wiki/File:Meat_shop_(132234038).jpg"], ["shop-07", "2016 April Hyderabad India Trip (25695196314).jpg", "Michael Babb", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:2016_April_Hyderabad_India_Trip_(25695196314).jpg"], ["shop-08", "Indian's butcher (315696605).jpg", "Cyril Bèle from Paris", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Indian%27s_butcher_(315696605).jpg"], ["shop-09", "Butcher's Shop Kolkata (16573873579).jpg", "Kathy MacPhee", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Butcher%27s_Shop_Kolkata_(16573873579).jpg"], ["shop-10", "Goat meat.jpg", "Kalungi Nathan", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Goat_meat.jpg"], ["market-1", "Meat market at New Market, Kolkata 02.jpg", "Kritzolina", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Meat_market_at_New_Market,_Kolkata_02.jpg"], ["market-2", "Meat market (3979082795).jpg", "Jan from Singapore, Singapore", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Meat_market_(3979082795).jpg"], ["curry-1", "Goat Meat 5983.JPG", "Biswarup Ganguly", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Goat_Meat_5983.JPG"], ["curry-2", "Raw lamb cutlets with shredded ginger and rosemary.jpg", "Salimfadhley", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Raw_lamb_cutlets_with_shredded_ginger_and_rosemary.jpg"], ["boneless-1", "Mutton frozen with internal fat.jpg", "Histmole", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_frozen_with_internal_fat.jpg"], ["keema-1", "Hackfleisch-1.jpg", "Rainer Zenz", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Hackfleisch-1.jpg"], ["keema-2", "Фарш.jpg", "Pannet", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:%D0%A4%D0%B0%D1%80%D1%88.jpg"], ["keema-3", "Viande Hachée.jpg", "Noa29", "CC BY 4.0", "https://commons.wikimedia.org/wiki/File:Viande_Hach%C3%A9e.jpg"], ["keema-4", "Minced meat.jpg", "Erwin", "CC0", "https://commons.wikimedia.org/wiki/File:Minced_meat.jpg"], ["chops-1", "Mutton chop.jpg", "Tvabutzku1234", "CC0", "https://commons.wikimedia.org/wiki/File:Mutton_chop.jpg"], ["chops-2", "Goat chops.jpg", "David Blaine from Spokane, USA", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Goat_chops.jpg"], ["liver-1", "Kaleji.jpg", "Instantraj", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Kaleji.jpg"], ["liver-2", "Lambs liver.jpg", "Beck", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Lambs_liver.jpg"], ["liver-3", "Goat Liver and fat in a basin.jpg", "Olgatladi2020", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Goat_Liver_and_fat_in_a_basin.jpg"], ["kidney-1", "Kidnies lamb.jpg", "Wikimedia Commons user", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Kidnies_lamb.jpg"], ["kidney-2", "Kidney of lamb 2.jpg", "Jurfeld", "CC BY 4.0", "https://commons.wikimedia.org/wiki/File:Kidney_of_lamb_2.jpg"], ["boti-1", "Raw Tripe.png", "Broughs butchery", "CC0", "https://commons.wikimedia.org/wiki/File:Raw_Tripe.png"], ["paya-1", "Mutton Paya 2023.jpg", "Vis M", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_Paya_2023.jpg"], ["paya-2", "Goat legs for sale.JPG", "Surya Prakash.S.A.", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Goat_legs_for_sale.JPG"], ["head-1", "Mutton head, lulu mall.jpg", "Vis M", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_head,_lulu_mall.jpg"], ["brain-1", "Mutton Brain.jpg", "Vis M", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_Brain.jpg"], ["brain-2", "GoatBrain.jpg", "Sundar", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:GoatBrain.jpg"], ["shop-11", "2009 India Butcher's shop in Muslim district of Mysore.jpg", "runran from An island in the stream", "CC BY-SA 2.0", "https://commons.wikimedia.org/wiki/File:2009_India_Butcher%27s_shop_in_Muslim_district_of_Mysore.jpg"], ["market-3", "Food sold in New Market, Kolkata 05.jpg", "Kritzolina", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Food_sold_in_New_Market,_Kolkata_05.jpg"], ["market-4", "Food sold in New Market, Kolkata 06.jpg", "Kritzolina", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Food_sold_in_New_Market,_Kolkata_06.jpg"], ["shop-12", "Food sold in New Market, Kolkata 07.jpg", "Kritzolina", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Food_sold_in_New_Market,_Kolkata_07.jpg"], ["addon-masala", "Garam Masala 1.jpg", "Gaurav Dhwaj Khadka", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Garam_Masala_1.jpg"], ["addon-spices", "Garam masala used for making Biryani and Hyderabadi Haleem.jpg", "Breville USA", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Garam_masala_used_for_making_Biryani_and_Hyderabadi_Haleem.jpg"], ["addon-garam", "Biriyani Masala.jpg", "Auli Raha ( অলি রাহা)", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Biriyani_Masala.jpg"], ["addon-curd", "Curd in steel bowl.jpg", "Netha Hussain", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Curd_in_steel_bowl.jpg"], ["addon-lemon", "Lemon - whole and split.jpg", "Ivar Leidus", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Lemon_-_whole_and_split.jpg"], ["addon-mint", "Mint leaves (Mentha spicata).jpg", "Commonists", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mint_leaves_(Mentha_spicata).jpg"], ["banner-biryani-1", "Biryani Hyderabadi.jpg", "Mujju2375", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Biryani_Hyderabadi.jpg"], ["banner-biryani-2", "Mutton biiyani homestyle.jpg", "Sarbani89", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_biiyani_homestyle.jpg"], ["banner-nalli", "Nalli elumbu curry.JPG", "Kalaiselvi Murugesan", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Nalli_elumbu_curry.JPG"], ["banner-keema", "MuttonKeemaParota.JPG", "Wikimedia Commons user", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:MuttonKeemaParota.JPG"], ["banner-biryani-3", "Mutton Biryani, Bombay Style.jpg", "Jayanthkumar101", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Mutton_Biryani,_Bombay_Style.jpg"]];
+$('#creditList').innerHTML=CREDITS.map(c=>`<li><a href="${c[4]}" target="_blank" rel="noopener">${esc(c[1])}</a> — ${esc(c[2])}, ${c[3]}</li>`).join('')+'<li>Owner and rider portraits: AI-generated people who do not exist (thispersondoesnotexist.com)</li>';
+
+/* layer + toast */
+function layer(html){$('#layer').innerHTML=`<div class="scrim">${html}</div>`;const sc=$('#layer .scrim');sc.addEventListener('click',e=>{if(e.target===sc||e.target.closest('[data-close]'))closeLayer()});const f=sc.querySelector('button');if(f)f.focus({preventScroll:true})}
+function closeLayer(){$('#layer').innerHTML=''}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
+
+setTown();route();
+})();
+
+</script>
