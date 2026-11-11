@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" width="640" height="200" role="img" aria-label="Are Katike cuts">
+  <title>ARE KATIKE cuts</title>
+  <!-- Emblem: lion head in front of a Maratha talwar (Bhavani khadga), inside a royal roundel -->
+  <g id="ak-mark">
+    <circle cx="100" cy="100" r="98" fill="#6E1020"/>
+    <circle cx="100" cy="100" r="90" fill="none" stroke="#D9A441" stroke-width="2.5"/>
+    <circle cx="100" cy="100" r="84" fill="none" stroke="#D9A441" stroke-width="1" stroke-dasharray="1 4"/>
+    <!-- talwar -->
+    <path d="M95.5 48 L104.5 48 C106 96 109 148 114 184 C105 166 99 132 96 96 Z" fill="#F4E9DC" stroke="#B88A3A" stroke-width="1"/>
+    <path d="M100 54 C101.5 100 104 138 108 166" fill="none" stroke="#CDBBA6" stroke-width="1.2"/>
+    <rect x="95.5" y="24" width="9" height="20" rx="3" fill="#8A5A1C"/>
+    <path d="M95.5 30 h9 M95.5 35 h9 M95.5 40 h9" stroke="#E2B04E" stroke-width="1"/>
+    <ellipse cx="100" cy="22" rx="15" ry="4.5" fill="#E2B04E"/>
+    <circle cx="100" cy="15" r="3.5" fill="#E2B04E"/>
+    <path d="M76 45 Q100 39 124 45 L124 50 Q100 44 76 50 Z" fill="#E2B04E"/>
+    <circle cx="76" cy="47.5" r="4" fill="#E2B04E"/>
+    <circle cx="124" cy="47.5" r="4" fill="#E2B04E"/>
+    <!-- mane -->
+    <polygon fill="#B97E25" points="100.0,54.0 107.4,66.7 119.1,57.8 121.1,72.4 135.4,68.6 131.6,82.9 146.2,84.9 137.3,96.6 150.0,104.0 137.3,111.4 146.2,123.1 131.6,125.1 135.4,139.4 121.1,135.6 119.1,150.2 107.4,141.3 100.0,154.0 92.6,141.3 80.9,150.2 78.9,135.6 64.6,139.4 68.4,125.1 53.8,123.1 62.7,111.4 50.0,104.0 62.7,96.6 53.8,84.9 68.4,82.9 64.6,68.6 78.9,72.4 80.9,57.8 92.6,66.7"/>
+    <polygon fill="#E2B04E" points="108.2,62.8 112.2,74.4 123.3,69.1 122.6,81.4 134.9,80.7 129.6,91.8 141.2,95.8 132.0,104.0 141.2,112.2 129.6,116.2 134.9,127.3 122.6,126.6 123.3,138.9 112.2,133.6 108.2,145.2 100.0,136.0 91.8,145.2 87.8,133.6 76.7,138.9 77.4,126.6 65.1,127.3 70.4,116.2 58.8,112.2 68.0,104.0 58.8,95.8 70.4,91.8 65.1,80.7 77.4,81.4 76.7,69.1 87.8,74.4 91.8,62.8 100.0,72.0"/>
+    <!-- face -->
+    <circle cx="80" cy="81" r="8" fill="#F5E6D0"/><circle cx="80" cy="81" r="4" fill="#6E1020"/>
+    <circle cx="120" cy="81" r="8" fill="#F5E6D0"/><circle cx="120" cy="81" r="4" fill="#6E1020"/>
+    <path d="M100 74 C116 74 126 86 126 102 C126 120 116 134 100 140 C84 134 74 120 74 102 C74 86 84 74 100 74 Z" fill="#F5E6D0"/>
+    <path d="M80 95 L96 100.5 M120 95 L104 100.5" stroke="#6E1020" stroke-width="4" stroke-linecap="round"/>
+    <path d="M84 104 Q90 99.5 95.5 105 Q89 108 84 104 Z M116 104 Q110 99.5 104.5 105 Q111 108 116 104 Z" fill="#6E1020"/>
+    <path d="M97.5 106 L97.5 113 M102.5 106 L102.5 113" stroke="#C9A982" stroke-width="1.4" stroke-linecap="round"/>
+    <ellipse cx="93" cy="125" rx="7.5" ry="6.5" fill="#EAD3B4"/><ellipse cx="107" cy="125" rx="7.5" ry="6.5" fill="#EAD3B4"/>
+    <path d="M92.5 114 L107.5 114 L100 121.5 Z" fill="#6E1020" stroke="#6E1020" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M100 121.5 V127 M94 131 Q100 135.5 106 131" fill="none" stroke="#6E1020" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="90" cy="124" r="1" fill="#6E1020"/><circle cx="94" cy="127" r="1" fill="#6E1020"/><circle cx="110" cy="124" r="1" fill="#6E1020"/><circle cx="106" cy="127" r="1" fill="#6E1020"/>
+  </g>
+  <!-- wordmark -->
+  <text x="228" y="108" font-family="'Rozha One', Georgia, serif" font-size="74" fill="#6E1020" letter-spacing="3">ARE KATIKE</text>
+  <line x1="232" y1="140" x2="350" y2="140" stroke="#C8912F" stroke-width="2"/>
+  <text x="412" y="150" text-anchor="middle" font-family="'Hind', 'Segoe UI', sans-serif" font-weight="600" font-size="30" fill="#C8912F" letter-spacing="12">cuts</text>
+  <line x1="474" y1="140" x2="592" y2="140" stroke="#C8912F" stroke-width="2"/>
+</svg>
