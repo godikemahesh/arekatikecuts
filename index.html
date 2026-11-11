@@ -644,7 +644,7 @@ function viewHome(){
       <div class="hero-txt">
         <span class="official">${kycTick} Official Are Katike website</span>
         <h1>Fresh mutton from the butcher <em>you already know.</em></h1>
-        <p class="te">మీకు తెలిసిన కటికె నుండి తాజా మటన్</p>
+        <p class="te">మీకు తెలిసిన కటికె వాళ్ళ నుండి తాజా మటన్</p>
         <p class="lede">Choose a verified Katike shop near you, see the owner's face, pick your cut, and get it delivered fresh to your home.</p>
         <form class="hsearch" id="hForm" role="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="hq" type="search" placeholder="Search a cut or shop, e.g. keema" aria-label="Search a cut or shop" autocomplete="off"><button type="submit">Search</button></form>
         <div class="hero-town"><span>Delivering in</span>${Object.keys(TOWNS).map(t=>`<button type="button" class="tbtn" data-town="${t}" aria-pressed="${t===town}">${t}</button>`).join('')}</div>
