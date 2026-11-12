@@ -491,6 +491,74 @@ footer{margin-top:0}
 .te-s{display:block;color:var(--brand);font-size:13px}
 .pcard .te-n{display:block;font-size:12.5px}
 .about .te-h,.about small{color:#E2B04E}
+
+/* ===== phone polish ===== */
+.hero-in>*,.sp-card>*,.res-h>*,.cline>*{min-width:0}
+@media (max-width:620px){
+  .hero-in{gap:22px;padding-block:22px 18px}
+  .hero h1{font-size:30px}
+  .hero .te{font-size:16px}
+  .hero .lede{font-size:15px}
+  .hsearch{padding:6px 6px 6px 12px}
+  .hsearch input{font-size:15px}
+  .hero-town{gap:6px}
+  .tbtn{padding:5px 12px;font-size:13px}
+  .facts{gap:10px 14px;padding-block:0 22px}
+  .facts b{font-size:20px}
+  .hero-cap{font-size:12px;padding:5px 12px}
+  .sec{padding-block:14px 4px}
+  .sec-h h2{font-size:19px}
+  .te-h{display:block;white-space:normal;margin-top:2px;font-size:.75em}
+  .how{gap:10px}
+  .how>div{flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:14px}
+  .how img{width:56px;height:56px;margin:0}
+  .how>div>b{flex:1;min-width:0}
+  .how .te-s,.how p{flex-basis:100%}
+  .how .hn{font-size:30px;top:10px;right:12px}
+  .cutgrid{gap:10px}
+  .cutg b{font-size:15px;padding:8px 10px 0}
+  .cutg span{padding:0 10px 10px;font-size:12.5px}
+  .shops.big .scard h3{font-size:18px}
+  .shops.big .scard .deal{font-size:16px}
+  .shops.big .scard .owner{width:72px;height:72px;bottom:-26px}
+  .about-in{padding-block:30px;gap:20px}
+  .about h2{font-size:28px}
+  /* shop page */
+  .sp-card{grid-template-columns:1fr;gap:10px}
+  .sp-owner{order:-1;flex-direction:row;justify-content:flex-start;gap:12px;text-align:left}
+  .sp-owner img{width:68px;height:68px}
+  .sp-owner b{font-size:16px}
+  .quote{margin-top:4px}
+  .item{gap:12px;padding-block:18px}
+  .item h3{font-size:16px}
+  .item .ds{font-size:13.5px}
+  /* search */
+  .res{padding:12px}
+  .res-h .go{display:none}
+  .res-h h3 span.n{white-space:normal}
+  .res-h img.ava{width:52px;height:52px}
+  .tabs button{padding:10px 10px}
+  /* cart */
+  .cart-grid{padding-block:12px 30px}
+  .box{padding:14px}
+  .cline{grid-template-columns:52px 1fr auto;grid-template-areas:"img txt txt" "img step amt";row-gap:8px}
+  .cline>img{grid-area:img;align-self:start}
+  .cline>div{grid-area:txt}
+  .cline>.stepper{grid-area:step;justify-self:start}
+  .cline>.amt{grid-area:amt}
+  /* orders */
+  .track-top{padding:14px;gap:10px}
+  .track-top h2{font-size:17px}
+  .track-top img{width:52px;height:52px}
+  .rider .t{min-width:0;flex:1 1 auto}
+  .rider .otp{flex-shrink:0;font-size:13px;letter-spacing:.12em}
+  .porder .h{flex-wrap:wrap}
+  /* header */
+  .top .wrap{gap:10px}
+  .deliver{padding-left:10px}
+  .deliver .eta{font-size:15.5px}
+}
+@media (max-width:360px){.hero h1{font-size:27px}.cutgrid{grid-template-columns:1fr 1fr}.facts b{font-size:18px}}
 </style>
 
 <header class="top">
